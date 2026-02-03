@@ -94,10 +94,39 @@ canvas{width:100%!important}
 .connector-line .val{color:var(--text-bright);font-weight:500}.connector-line .neg{color:var(--negative)}.connector-line .pos{color:var(--positive)}.connector-line .dim{color:var(--text-dim)}
 .equiv-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;letter-spacing:0.5px;text-transform:uppercase;background:var(--accent-dim);color:var(--accent)}
 .indent{padding-left:24px;color:var(--text-dim)}
+.about-btn{padding:7px 16px;font-family:'DM Mono',monospace;font-size:11px;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:6px;cursor:pointer;transition:all 0.2s;margin-left:auto}
+.about-btn:hover{border-color:var(--text-dim);color:var(--text)}
+.about-panel{max-height:0;overflow:hidden;transition:max-height 0.3s ease-out;background:var(--surface);border-bottom:1px solid var(--border)}
+.about-panel.open{max-height:600px;overflow-y:auto}
+.about-content{padding:24px 40px;font-size:13px;line-height:1.8}
+.about-content h2{font-family:'Fraunces',serif;font-size:16px;font-weight:500;color:var(--text-bright);margin:20px 0 10px}
+.about-content h2:first-child{margin-top:0}
+.about-content p{color:var(--text);margin-bottom:12px}
+.about-content ul{margin:0 0 12px 20px;color:var(--text-dim)}
+.about-content li{margin-bottom:4px}
+.about-content strong{color:var(--text-bright)}
+@media(max-width:600px){.about-content{padding:16px}}
 </style>
 </head>
 <body>
-<div class="header"><div><h1>Car-Share Venture</h1><div class="subtitle">Financial Model Explorer · Early-Stage Unit Economics</div></div></div>
+<div class="header"><div><h1>Car-Share Venture</h1><div class="subtitle">Financial Model Explorer · Early-Stage Unit Economics</div></div><button class="about-btn" onclick="toggleAbout()">About</button></div>
+<div class="about-panel" id="about-panel">
+  <div class="about-content">
+    <h2>Overview</h2>
+    <p>This interactive tool provides a comprehensive framework for exploring the financial dynamics of a car-share venture, including pricing strategies, cost structures, and customer lifetime value analysis.</p>
+    <h2>Features</h2>
+    <ul>
+      <li><strong>Pricing Strategy</strong> — Adjust pricing levers and see 5-year revenue projections, net income, and breakeven timing</li>
+      <li><strong>Cost Structure</strong> — Visualize local office costs across billing, processing, marketing, and fixed overhead</li>
+      <li><strong>Plan vs Actual</strong> — Compare planned assumptions against actual operating data with variance analysis</li>
+      <li><strong>Unit Economics</strong> — View gross margin from three perspectives: per use, per member, or per car</li>
+      <li><strong>Sensitivity Analysis</strong> — Identify which assumptions matter most via tornado charts and heatmaps</li>
+      <li><strong>Lifetime Value</strong> — Model customer LTV with adjustable margin, attrition, and acquisition cost</li>
+    </ul>
+    <h2>Usage</h2>
+    <p>All calculations run client-side with no server dependencies. Adjust the sliders and controls to explore different scenarios.</p>
+  </div>
+</div>
 <div class="tabs">
   <button class="tab active" onclick="showPanel('pricing',this)">Pricing Strategy</button>
   <button class="tab" onclick="showPanel('costs',this)">Cost Structure</button>
@@ -162,7 +191,7 @@ canvas{width:100%!important}
 
 <!-- PANEL 3: PLAN VS ACTUAL -->
 <div class="panel" id="panel-planvactual">
-  <div class="section-title">Plan vs. Actual — September Operating Data</div>
+  <div class="section-title">Plan vs. Actual — Operating Data</div>
   <div class="kpi-row">
     <div class="kpi"><div class="kpi-label">Members (actual)</div><div class="kpi-value">239</div><div class="kpi-sub">vs ~156 plan pace</div></div>
     <div class="kpi"><div class="kpi-label">Trips / member / mo</div><div class="kpi-value">1.98</div><div class="kpi-sub">vs 4.0 planned</div></div>
@@ -174,12 +203,12 @@ canvas{width:100%!important}
   <div class="section-title">Fishbone Decomposition — Margin per Member</div>
   <div class="two-col">
     <div class="card"><div class="card-label">Planned · Monthly margin per member</div><div id="fishbone-plan"></div></div>
-    <div class="card"><div class="card-label">Actual (September) · Monthly margin per member</div><div id="fishbone-actual"></div></div>
+    <div class="card"><div class="card-label">Actual · Monthly margin per member</div><div id="fishbone-actual"></div></div>
   </div>
   <div class="chart-container" style="margin-top:16px"><div class="chart-title">Variance Waterfall — Where the Plan Broke Down</div><canvas id="chart-variance" height="280"></canvas></div>
   <div class="section-title">Hourly vs Daily Use — The Hidden Economics</div>
   <div class="card">
-    <div class="card-label">Actual September Performance by Use Type</div>
+    <div class="card-label">Actual Performance by Use Type</div>
     <table class="data-table">
       <thead><tr><th>Metric</th><th style="text-align:right">Hourly</th><th style="text-align:right">Daily</th><th style="text-align:right">Overall</th><th style="text-align:right">Plan</th></tr></thead>
       <tbody>
@@ -554,6 +583,7 @@ function updateLTV(){
 function resetLTV(){['s-ltv-margin','s-ltv-attrition','s-ltv-cac'].forEach(function(id,i){document.getElementById(id).value=[90,0.15,43][i]});updateLTV()}
 
 // === NAV ===
+function toggleAbout(){document.getElementById('about-panel').classList.toggle('open')}
 function showPanel(id,btn){document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});document.getElementById('panel-'+id).classList.add('active');btn.classList.add('active');
   if(id==='pricing')updatePricing();if(id==='costs')initCosts();if(id==='planvactual')initPlanVsActual();if(id==='uniteconomics')updateUnit();if(id==='sensitivity')initSensitivity();if(id==='lifetime')updateLTV()}
 var rT;window.addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(function(){var a=document.querySelector('.panel.active');if(a.id==='panel-pricing')updatePricing();if(a.id==='panel-costs')initCosts();if(a.id==='panel-planvactual')initPlanVsActual();if(a.id==='panel-uniteconomics')updateUnit();if(a.id==='panel-sensitivity')initSensitivity();if(a.id==='panel-lifetime')updateLTV()},200)});
