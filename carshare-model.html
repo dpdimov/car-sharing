@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Car-Share Venture: Financial Model Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c0f14;--surface:#141821;--surface2:#1a1f2b;--border:#252b3a;--text:#d4dae8;--text-dim:#6b7594;--text-bright:#f0f3fa;--accent:#e8a44a;--accent-dim:rgba(232,164,74,0.15);--positive:#4ecb8d;--negative:#e85a6f;--positive-dim:rgba(78,203,141,0.12);--negative-dim:rgba(232,90,111,0.12);--blue:#5b8def;--blue-dim:rgba(91,141,239,0.12);--purple:#a78bfa}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--text);font-size:13px;line-height:1.6;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.header{padding:32px 40px 24px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.header h1{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--text-bright);letter-spacing:-0.5px}
+.header .subtitle{font-size:12px;color:var(--text-dim);padding-bottom:3px}
+.tabs{display:flex;gap:0;padding:0 40px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tab{padding:14px 22px;font-family:'DM Mono',monospace;font-size:12px;font-weight:400;color:var(--text-dim);background:none;border:none;cursor:pointer;position:relative;white-space:nowrap;transition:color 0.2s;letter-spacing:0.5px;text-transform:uppercase}
+.tab:hover{color:var(--text)}.tab.active{color:var(--accent)}.tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--accent)}
+.panel{display:none;padding:28px 40px 60px}.panel.active{display:block}
+.section-title{font-family:'Fraunces',serif;font-size:18px;font-weight:500;color:var(--text-bright);margin:28px 0 16px;letter-spacing:-0.3px}.section-title:first-child{margin-top:0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px 24px;margin-bottom:16px}
+.card-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-dim);margin-bottom:12px}
+.controls-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:24px}
+.control-group{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 20px}
+.control-group label{display:block;font-size:11px;color:var(--text-dim);margin-bottom:8px;letter-spacing:0.3px}
+.control-group .value-display{font-family:'Fraunces',serif;font-size:22px;font-weight:500;color:var(--text-bright);margin-bottom:8px}
+input[type="range"]{-webkit-appearance:none;width:100%;height:4px;background:var(--border);border-radius:2px;outline:none}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--accent);border-radius:50%;cursor:pointer;box-shadow:0 0 8px rgba(232,164,74,0.3)}
+.toggle-row{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.toggle-btn{padding:7px 16px;font-family:'DM Mono',monospace;font-size:11px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);border-radius:6px;cursor:pointer;transition:all 0.2s}
+.toggle-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.chart-container{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px}
+.chart-container .chart-title{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:16px}
+canvas{width:100%!important}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:24px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 18px}
+.kpi .kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:6px}
+.kpi .kpi-value{font-family:'Fraunces',serif;font-size:24px;font-weight:500;color:var(--text-bright)}
+.kpi .kpi-value.positive{color:var(--positive)}.kpi .kpi-value.negative{color:var(--negative)}
+.kpi .kpi-sub{font-size:10px;color:var(--text-dim);margin-top:2px}
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{text-align:left;padding:8px 12px;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:400}
+.data-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text)}
+.data-table tr:last-child td{border-bottom:none}.data-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+.data-table td.positive{color:var(--positive)}.data-table td.negative{color:var(--negative)}
+.data-table tr.total-row td{font-weight:500;color:var(--text-bright);border-top:2px solid var(--border)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}.controls-grid{grid-template-columns:1fr}.header{padding:24px 20px 18px}.tabs{padding:0 20px}.panel{padding:20px}}
+.annotation{font-size:11px;color:var(--text-dim);font-style:italic;margin-top:8px;line-height:1.5;padding:10px 14px;border-left:2px solid var(--border)}
+.heatmap-grid{display:grid;gap:2px;margin-top:12px}
+.heatmap-cell{padding:8px 4px;text-align:center;font-size:10px;border-radius:3px;font-variant-numeric:tabular-nums}
+.heatmap-header{font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-dim);padding:4px;text-align:center}
+.reset-btn{padding:7px 16px;font-family:'DM Mono',monospace;font-size:11px;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:6px;cursor:pointer;transition:all 0.2s;margin-left:auto}
+.reset-btn:hover{border-color:var(--text-dim);color:var(--text)}
+.flex-between{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.connector-line{font-size:12px;line-height:2;color:var(--text);font-family:'DM Mono',monospace}
+.connector-line .val{color:var(--text-bright);font-weight:500}.connector-line .neg{color:var(--negative)}.connector-line .pos{color:var(--positive)}.connector-line .dim{color:var(--text-dim)}
+.equiv-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;letter-spacing:0.5px;text-transform:uppercase;background:var(--accent-dim);color:var(--accent)}
+.indent{padding-left:24px;color:var(--text-dim)}
+</style>
+</head>
+<body>
+<div class="header"><div><h1>Car-Share Venture</h1><div class="subtitle">Financial Model Explorer · Early-Stage Unit Economics</div></div></div>
+<div class="tabs">
+  <button class="tab active" onclick="showPanel('pricing',this)">Pricing Strategy</button>
+  <button class="tab" onclick="showPanel('costs',this)">Cost Structure</button>
+  <button class="tab" onclick="showPanel('planvactual',this)">Plan vs Actual</button>
+  <button class="tab" onclick="showPanel('uniteconomics',this)">Unit Economics</button>
+  <button class="tab" onclick="showPanel('sensitivity',this)">Sensitivity</button>
+  <button class="tab" onclick="showPanel('lifetime',this)">Lifetime Value</button>
+</div>
+
+<!-- PANEL 1: PRICING -->
+<div class="panel active" id="panel-pricing">
+  <div class="flex-between"><div class="section-title">Pricing Structure</div><button class="reset-btn" onclick="resetPricing()">Reset to defaults</button></div>
+  <div class="controls-grid">
+    <div class="control-group"><label>Annual membership fee</label><div class="value-display" id="v-annual-fee">$75</div><input type="range" id="s-annual-fee" min="0" max="500" step="25" value="75" oninput="updatePricing()"></div>
+    <div class="control-group"><label>Hourly rate</label><div class="value-display" id="v-hourly-rate">$5.50</div><input type="range" id="s-hourly-rate" min="0.5" max="12" step="0.5" value="5.5" oninput="updatePricing()"></div>
+    <div class="control-group"><label>Per-mile charge</label><div class="value-display" id="v-mile-rate">$0.40</div><input type="range" id="s-mile-rate" min="0" max="1" step="0.05" value="0.40" oninput="updatePricing()"></div>
+    <div class="control-group"><label>Application fee (one-time)</label><div class="value-display" id="v-app-fee">$25</div><input type="range" id="s-app-fee" min="0" max="100" step="5" value="25" oninput="updatePricing()"></div>
+    <div class="control-group"><label>Trips per member per month</label><div class="value-display" id="v-trips">4.0</div><input type="range" id="s-trips" min="1" max="8" step="0.5" value="4" oninput="updatePricing()"></div>
+    <div class="control-group"><label>Attrition rate (annual)</label><div class="value-display" id="v-attrition">15%</div><input type="range" id="s-attrition" min="0.02" max="0.40" step="0.01" value="0.15" oninput="updatePricing()"></div>
+  </div>
+  <div class="kpi-row" id="pricing-kpis"></div>
+  <div class="two-col">
+    <div class="chart-container"><div class="chart-title">Revenue Breakdown + Members · 5-Year Projection</div><canvas id="chart-revenue" height="300"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Net Income Before Tax</div><canvas id="chart-netincome" height="300"></canvas></div>
+  </div>
+  <div class="chart-container"><div class="chart-title">Revenue vs Total Costs</div><canvas id="chart-revvscost" height="240"></canvas></div>
+  <div class="annotation">Adjust pricing levers to explore the trade-off: higher membership fees provide predictable recurring revenue but may suppress sign-ups, while usage-based pricing aligns revenue with demand but introduces volatility. The original plan used $300 annual / $1.50 per hour; the revised plan shifted to $75 / $5.50.</div>
+</div>
+
+<!-- PANEL 2: COST STRUCTURE -->
+<div class="panel" id="panel-costs">
+  <div class="section-title">Cost Structure — Local Office</div>
+  <p style="color:var(--text-dim);font-size:12px;margin-bottom:20px;">The local office (Boston) costs break into four categories with different cost behaviours. Car fleet costs (direct variable costs) are shown separately on the Pricing Strategy and Unit Economics panels.</p>
+
+  <div class="card">
+    <div class="card-label">Cost Category Mapping</div>
+    <table class="data-table">
+      <thead><tr><th>Category</th><th>Driver</th><th style="text-align:right">Unit Cost</th><th>Line Items</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--accent)">Per member</td><td>Avg members</td><td class="num">$24 / member / yr</td><td>Billing &amp; member servicing</td></tr>
+        <tr><td style="color:var(--blue)">Per new member</td><td>New sign-ups</td><td class="num">$20 / new member</td><td>Background checks, processing</td></tr>
+        <tr><td style="color:var(--purple)">Marketing</td><td>Annual budget</td><td class="num">$10–12K / yr</td><td>Marketing spend</td></tr>
+        <tr><td style="color:var(--positive)">Office fixed</td><td>None (fixed)</td><td class="num">$31–57K / yr</td><td>Admin salaries, benefits, space, equipment, phone</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-container"><div class="chart-title">Local Office Costs — 5-Year Breakdown by Category</div><canvas id="chart-cost-stack" height="300"></canvas></div>
+
+  <div class="two-col">
+    <div class="chart-container"><div class="chart-title">Cost per Member (All-In Local Office) by Year</div><canvas id="chart-cost-per-member" height="260"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Customer Acquisition Cost (Marketing + Processing) / New Members</div><canvas id="chart-cac" height="260"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">5-Year Detail — Local Office Costs (Revised Plan)</div>
+    <div id="cost-detail-table"></div>
+  </div>
+
+  <div class="annotation">Billing scales linearly with members ($24/yr). Background checks scale with new sign-ups ($20 each). Marketing is nearly flat, which means CAC rises sharply in years with few new members (Year 3, Year 5) — this invites the question of whether marketing spend should be more elastic. Office fixed costs step up in Year 2 as staff grow, then plateau.</div>
+</div>
+
+<!-- PANEL 3: PLAN VS ACTUAL -->
+<div class="panel" id="panel-planvactual">
+  <div class="section-title">Plan vs. Actual — September Operating Data</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Members (actual)</div><div class="kpi-value">239</div><div class="kpi-sub">vs ~156 plan pace</div></div>
+    <div class="kpi"><div class="kpi-label">Trips / member / mo</div><div class="kpi-value">1.98</div><div class="kpi-sub">vs 4.0 planned</div></div>
+    <div class="kpi"><div class="kpi-label">Utilization rate</div><div class="kpi-value">30.6%</div><div class="kpi-sub">vs 40% planned</div></div>
+    <div class="kpi"><div class="kpi-label">Annualised attrition</div><div class="kpi-value negative">22.7%</div><div class="kpi-sub">vs 15% planned</div></div>
+    <div class="kpi"><div class="kpi-label">Revenue / use</div><div class="kpi-value">$43.71</div><div class="kpi-sub">vs $30.80 planned</div></div>
+    <div class="kpi"><div class="kpi-label">Members / car</div><div class="kpi-value">11.6</div><div class="kpi-sub">vs 18.0 planned</div></div>
+  </div>
+  <div class="section-title">Fishbone Decomposition — Margin per Member</div>
+  <div class="two-col">
+    <div class="card"><div class="card-label">Planned · Monthly margin per member</div><div id="fishbone-plan"></div></div>
+    <div class="card"><div class="card-label">Actual (September) · Monthly margin per member</div><div id="fishbone-actual"></div></div>
+  </div>
+  <div class="chart-container" style="margin-top:16px"><div class="chart-title">Variance Waterfall — Where the Plan Broke Down</div><canvas id="chart-variance" height="280"></canvas></div>
+  <div class="section-title">Hourly vs Daily Use — The Hidden Economics</div>
+  <div class="card">
+    <div class="card-label">Actual September Performance by Use Type</div>
+    <table class="data-table">
+      <thead><tr><th>Metric</th><th style="text-align:right">Hourly</th><th style="text-align:right">Daily</th><th style="text-align:right">Overall</th><th style="text-align:right">Plan</th></tr></thead>
+      <tbody>
+        <tr><td>Hours per use</td><td class="num">6.20</td><td class="num">16.00</td><td class="num">9.62</td><td class="num">4.00</td></tr>
+        <tr><td>Miles per use</td><td class="num">24.5</td><td class="num">94.0</td><td class="num">48.8</td><td class="num">22.0</td></tr>
+        <tr><td>Revenue per use</td><td class="num">$42.78</td><td class="num">$45.45</td><td class="num">$43.71</td><td class="num">$30.80</td></tr>
+        <tr><td class="indent">— hourly/daily-cap revenue</td><td class="num">$33.12</td><td class="num">$44.00</td><td class="num">$36.92</td><td class="num">$22.00</td></tr>
+        <tr><td class="indent">— mileage revenue</td><td class="num">$9.66</td><td class="num">$1.45</td><td class="num">$6.79</td><td class="num">$8.80</td></tr>
+        <tr><td>Car cost per use</td><td class="num">$21.90</td><td class="num">$56.53</td><td class="num">$33.98</td><td class="num">$10.05</td></tr>
+        <tr><td>Margin per use</td><td class="num positive">$20.89</td><td class="num negative">−$11.08</td><td class="num positive">$9.73</td><td class="num positive">$20.75</td></tr>
+        <tr><td>Uses / member / mo</td><td class="num">1.29</td><td class="num">0.69</td><td class="num">1.98</td><td class="num">4.00</td></tr>
+        <tr class="total-row"><td>Margin / member / mo</td><td class="num positive">$26.85</td><td class="num negative">−$7.64</td><td class="num positive">$19.22</td><td class="num positive">$83.01</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="annotation" style="margin-bottom:20px">Daily uses tie up 16 hours of car time but generate only $45.45 — the $44 daily cap (8h x $5.50) plus minimal excess mileage ($1.45 avg, since most trips stay under 125 free miles). The car cost for those 16 hours is $56.53, making every daily use margin-negative.</div>
+  <div class="section-title">Pricing Response — Daily Rate Explorer</div>
+  <p style="color:var(--text-dim);font-size:12px;margin-bottom:16px;">How would changing the daily cap and free mileage allowance affect the economics?</p>
+  <div class="controls-grid">
+    <div class="control-group"><label>Daily rate cap ($)</label><div class="value-display" id="v-daily-cap">$44</div><input type="range" id="s-daily-cap" min="30" max="100" step="1" value="44" oninput="updateDailyExplorer()"></div>
+    <div class="control-group"><label>Free miles included</label><div class="value-display" id="v-free-miles">125</div><input type="range" id="s-free-miles" min="0" max="200" step="5" value="125" oninput="updateDailyExplorer()"></div>
+    <div class="control-group"><label>Per-mile charge (excess)</label><div class="value-display" id="v-excess-rate">$0.40</div><input type="range" id="s-excess-rate" min="0.10" max="1.00" step="0.05" value="0.40" oninput="updateDailyExplorer()"></div>
+  </div>
+  <div class="kpi-row" id="daily-kpis"></div>
+  <div class="two-col">
+    <div class="chart-container"><div class="chart-title">Per-Use Margin — Hourly vs Daily</div><canvas id="chart-daily-margin" height="260"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Blended Monthly Margin per Member at Varying Daily Caps</div><canvas id="chart-daily-blended" height="260"></canvas></div>
+  </div>
+  <div class="annotation">The average daily user drives 94 miles. At 125 free miles, nearly all trips fall below the threshold. Reducing the free-mile allowance or raising the daily cap directly attacks the daily-use subsidy.</div>
+</div>
+
+<!-- PANEL 4: UNIT ECONOMICS -->
+<div class="panel" id="panel-uniteconomics">
+  <div class="flex-between"><div class="section-title">Unit Economics Simulator</div><button class="reset-btn" onclick="resetUnit()">Reset to defaults</button></div>
+  <div class="toggle-row">
+    <button class="toggle-btn active" onclick="setUnitView('use',this)">Per Use</button>
+    <button class="toggle-btn" onclick="setUnitView('member',this)">Per Member</button>
+    <button class="toggle-btn" onclick="setUnitView('car',this)">Per Car</button>
+    <span class="equiv-badge">Same gross margin % — different lens</span>
+  </div>
+  <div class="controls-grid">
+    <div class="control-group"><label>Members per car</label><div class="value-display" id="v-mpc">18</div><input type="range" id="s-mpc" min="6" max="30" step="1" value="18" oninput="updateUnit()"></div>
+    <div class="control-group"><label>Utilization rate</label><div class="value-display" id="v-util">40%</div><input type="range" id="s-util" min="0.10" max="0.70" step="0.01" value="0.40" oninput="updateUnit()"></div>
+    <div class="control-group"><label>Monthly car cost ($)</label><div class="value-display" id="v-carcost">$723</div><input type="range" id="s-carcost" min="400" max="1200" step="25" value="723" oninput="updateUnit()"></div>
+    <div class="control-group"><label>Revenue per use ($)</label><div class="value-display" id="v-revuse">$30.80</div><input type="range" id="s-revuse" min="10" max="80" step="1" value="30.8" oninput="updateUnit()"></div>
+    <div class="control-group"><label>Hours per use</label><div class="value-display" id="v-hpu">4.0</div><input type="range" id="s-hpu" min="1" max="16" step="0.5" value="4" oninput="updateUnit()"></div>
+    <div class="control-group"><label>Uses per member per month</label><div class="value-display" id="v-upm">4.0</div><input type="range" id="s-upm" min="0.5" max="8" step="0.5" value="4" oninput="updateUnit()"></div>
+  </div>
+  <div class="kpi-row" id="unit-kpis"></div>
+  <div id="unit-view-content"></div>
+  <div class="annotation" id="unit-annotation"></div>
+</div>
+
+<!-- PANEL 5: SENSITIVITY -->
+<div class="panel" id="panel-sensitivity">
+  <div class="section-title">Sensitivity Analysis</div>
+  <p style="color:var(--text-dim);margin-bottom:20px;font-size:12px;">Which assumptions matter most? Year 3 net income response to changes in key parameters.</p>
+  <div class="chart-container"><div class="chart-title">Tornado Chart — Impact on Year 3 Net Income</div><canvas id="chart-tornado" height="320"></canvas></div>
+  <div class="section-title">Two-Way Sensitivity — Hourly Rate x Members per Car</div>
+  <div class="chart-container"><div class="chart-title">Year 3 Net Income ($K) — Green = Profitable, Red = Loss</div><div id="heatmap-container"></div></div>
+  <div class="annotation">The tornado chart reveals leverage points. The heatmap shows how two critical variables interact.</div>
+</div>
+
+<!-- PANEL 6: LIFETIME VALUE -->
+<div class="panel" id="panel-lifetime">
+  <div class="flex-between"><div class="section-title">Customer Lifetime Value</div><button class="reset-btn" onclick="resetLTV()">Reset to defaults</button></div>
+  <div class="controls-grid">
+    <div class="control-group"><label>Monthly margin per member ($)</label><div class="value-display" id="v-ltv-margin">$90.26</div><input type="range" id="s-ltv-margin" min="5" max="150" step="5" value="90" oninput="updateLTV()"></div>
+    <div class="control-group"><label>Annual attrition rate</label><div class="value-display" id="v-ltv-attrition">15%</div><input type="range" id="s-ltv-attrition" min="0.05" max="0.50" step="0.01" value="0.15" oninput="updateLTV()"></div>
+    <div class="control-group"><label>Customer acquisition cost ($)</label><div class="value-display" id="v-ltv-cac">$43</div><input type="range" id="s-ltv-cac" min="5" max="150" step="5" value="43" oninput="updateLTV()"></div>
+  </div>
+  <div class="kpi-row" id="ltv-kpis"></div>
+  <div class="two-col">
+    <div class="chart-container"><div class="chart-title">Cohort Survival Curve — % of Members Remaining</div><canvas id="chart-survival" height="260"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Cumulative Margin per Member Over Time</div><canvas id="chart-cumulative" height="260"></canvas></div>
+  </div>
+  <div class="card" style="margin-top:8px"><div class="card-label">Comparison — Plan vs Actual</div>
+    <table class="data-table"><thead><tr><th>Metric</th><th style="text-align:right">Plan</th><th style="text-align:right">Actual (Sep)</th><th style="text-align:right">Delta</th></tr></thead>
+      <tbody>
+        <tr><td>Monthly margin / member</td><td class="num">$90.26</td><td class="num">$26.56</td><td class="num negative">-71%</td></tr>
+        <tr><td>Average lifetime (months)</td><td class="num">80</td><td class="num">53</td><td class="num negative">-34%</td></tr>
+        <tr><td>Lifecycle margin</td><td class="num">$7,221</td><td class="num">$1,401</td><td class="num negative">-81%</td></tr>
+        <tr><td>CAC (marketing + processing)</td><td class="num">$42.73</td><td class="num">$47.23</td><td class="num negative">+11%</td></tr>
+        <tr class="total-row"><td>Net lifecycle margin</td><td class="num positive">$7,178</td><td class="num positive">$1,354</td><td class="num negative">-81%</td></tr>
+      </tbody></table></div>
+  <div class="annotation">Even with much lower margins and higher attrition than planned, the lifetime value per member remains positive. The CAC now reflects the full cost of acquisition: marketing budget plus background checks per new member.</div>
+</div>
+
+<script>
+// === MODEL DATA ===
+const MEMBER_GROWTH = {newMembers:[440,482,180.4,408.2,193]};
+const CAR_GROWTH = {ending:[24,48,50,66,66]};
+const TOTAL_VAR_PER_CAR = 8680;
+
+// Local office costs (Boston) - from Revised Plan
+const LOCAL_BILLING_RATE = 24; // per member per year
+const LOCAL_BGCHECK_RATE = 20; // per new member
+const LOCAL_MARKETING = [10000,12000,12000,12000,12000];
+const LOCAL_OFFICE_FIXED = [31000,51580,56580,56580,57280]; // admin+benefits+space+equip+phone
+// Corporate overhead
+const CORP_OVERHEAD = [125895,126760,140600,134600,136300];
+
+function runModel(p) {
+  const {annualFee,hourlyRate,mileRate,appFee,tripsPerMonth,attrition,milesPerTrip=22,hoursPerTrip=4} = p;
+  const yrs = [];
+  for (let y=0;y<5;y++) {
+    const beg=y===0?0:yrs[y-1].end, lost=beg*attrition, nw=MEMBER_GROWTH.newMembers[y], end=beg+nw-lost, avg=(beg+end)/2;
+    const bC=y===0?0:yrs[y-1].endC, eC=CAR_GROWTH.ending[y], aC=(bC+eC)/2;
+    const aR=nw*appFee, fR=avg*annualFee, mR=avg*12*tripsPerMonth*milesPerTrip*mileRate, hR=avg*12*tripsPerMonth*hoursPerTrip*hourlyRate, iR=avg*300*0.04;
+    const tR=aR+fR+mR+hR+iR;
+    const carC=aC*TOTAL_VAR_PER_CAR;
+    const billing=avg*LOCAL_BILLING_RATE, bgcheck=nw*LOCAL_BGCHECK_RATE, mkt=LOCAL_MARKETING[y], offF=LOCAL_OFFICE_FIXED[y];
+    const localOH=billing+bgcheck+mkt+offF;
+    const corpOH=CORP_OVERHEAD[y];
+    const tC=carC+localOH+corpOH;
+    const cac=(mkt+bgcheck)/(nw||1);
+    yrs.push({year:y+1,beg,end,avg,nw,endC:eC,aC,
+      appR:aR,feeR:fR,mileR:mR,hourlyR:hR,intR:iR,totalR:tR,
+      carC,billing,bgcheck,mkt,offF,localOH,corpOH,tC,ni:tR-tC,cac,
+      members_end:end});
+  }
+  return yrs;
+}
+
+// === CHART ENGINE ===
+function getCtx(id){const c=document.getElementById(id),d=window.devicePixelRatio||1,r=c.getBoundingClientRect();c.width=r.width*d;c.height=r.height*d;const x=c.getContext('2d');x.scale(d,d);return{ctx:x,w:r.width,h:r.height}}
+
+function drawBarChart(cid,labels,datasets,opts={}){
+  const{ctx,w,h}=getCtx(cid),M={top:30,right:20,bottom:40,left:65},cw=w-M.left-M.right,ch=h-M.top-M.bottom;
+  ctx.clearRect(0,0,w,h);let all=[];datasets.forEach(d=>all.push(...d.data));
+  let mx=Math.max(...all,0)*1.15,mn=Math.min(...all,0)*1.15;if(mn>=0)mn=0;if(mx<=0)mx=Math.max(...all.map(Math.abs))*0.1;
+  const rng=mx-mn||1,zY=M.top+(mx/rng)*ch;
+  ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='right';
+  for(let i=0;i<=5;i++){const v=mx-(rng*i/5),y=M.top+(i/5)*ch;ctx.beginPath();ctx.moveTo(M.left,y);ctx.lineTo(w-M.right,y);ctx.stroke();ctx.fillText(opts.fmtY?opts.fmtY(v):(Math.abs(v)>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v.toFixed(0)),M.left-8,y+3)}
+  if(mn<0){ctx.strokeStyle='#6b7594';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(M.left,zY);ctx.lineTo(w-M.right,zY);ctx.stroke()}
+  const gw=cw/labels.length,bw=Math.min(gw*0.6/datasets.length,36),tw=bw*datasets.length;
+  labels.forEach((l,i)=>{const gx=M.left+i*gw+gw/2;
+    datasets.forEach((ds,j)=>{const v=ds.data[i],bH=Math.abs(v/rng*ch),x=gx-tw/2+j*bw,y=v>=0?zY-bH:zY;
+      ctx.fillStyle=typeof ds.color==='function'?ds.color(v):ds.color;ctx.globalAlpha=0.85;ctx.fillRect(x,y,bw,bH);ctx.globalAlpha=1;
+      if(opts.showV){ctx.fillStyle='#d4dae8';ctx.textAlign='center';ctx.font='10px DM Mono';ctx.fillText(opts.fmtY?opts.fmtY(v):'$'+v.toFixed(0),x+bw/2,v>=0?y-6:y+bH+14)}});
+    ctx.fillStyle='#6b7594';ctx.textAlign='center';ctx.font='11px DM Mono';ctx.fillText(l,gx,h-M.bottom+20)});
+  if(datasets.length>1||opts.legend){let lx=M.left;datasets.forEach(ds=>{ctx.fillStyle=typeof ds.color==='function'?ds.color(1):ds.color;ctx.fillRect(lx,8,10,10);ctx.fillStyle='#6b7594';ctx.textAlign='left';ctx.font='10px DM Mono';ctx.fillText(ds.label,lx+14,17);lx+=ctx.measureText(ds.label).width+30})}
+}
+
+function drawLineChart(cid,labels,datasets,opts={}){
+  const{ctx,w,h}=getCtx(cid),M={top:30,right:20,bottom:40,left:65},cw=w-M.left-M.right,ch=h-M.top-M.bottom;
+  ctx.clearRect(0,0,w,h);let all=[];datasets.forEach(d=>all.push(...d.data));
+  let mx=Math.max(...all)*1.12,mn=Math.min(...all,0);if(mn>0)mn=0;const rng=mx-mn||1;
+  ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='right';
+  for(let i=0;i<=5;i++){const v=mx-(rng*i/5),y=M.top+(i/5)*ch;ctx.beginPath();ctx.moveTo(M.left,y);ctx.lineTo(w-M.right,y);ctx.stroke();ctx.fillText(opts.fmtY?opts.fmtY(v):'$'+v.toFixed(0),M.left-8,y+3)}
+  datasets.forEach(ds=>{ctx.strokeStyle=ds.color;ctx.lineWidth=2.5;ctx.beginPath();ds.data.forEach((v,i)=>{const x=M.left+(i/(labels.length-1))*cw,y=M.top+((mx-v)/rng)*ch;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.stroke();
+    ds.data.forEach((v,i)=>{const x=M.left+(i/(labels.length-1))*cw,y=M.top+((mx-v)/rng)*ch;ctx.fillStyle=ds.color;ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0c0f14';ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill()})});
+  labels.forEach((l,i)=>{const x=M.left+(i/(labels.length-1))*cw;ctx.fillStyle='#6b7594';ctx.textAlign='center';ctx.font='11px DM Mono';ctx.fillText(l,x,h-M.bottom+20)});
+  if(datasets.length>1){let lx=M.left;datasets.forEach(ds=>{ctx.strokeStyle=ds.color;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(lx,13);ctx.lineTo(lx+16,13);ctx.stroke();ctx.fillStyle='#6b7594';ctx.textAlign='left';ctx.font='10px DM Mono';ctx.fillText(ds.label,lx+20,17);lx+=ctx.measureText(ds.label).width+40})}
+}
+
+function drawStackedBarWithLine(cid,labels,datasets,lineData,lineLabel,lineFmtY){
+  const{ctx,w,h}=getCtx(cid),M={top:30,right:60,bottom:40,left:65},cw=w-M.left-M.right,ch=h-M.top-M.bottom;
+  ctx.clearRect(0,0,w,h);
+  const tots=labels.map((_,i)=>datasets.reduce((s,d)=>s+d.data[i],0)),mx=Math.max(...tots)*1.1;
+  // Left axis
+  ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='right';
+  for(let i=0;i<=5;i++){const v=mx-(mx*i/5),y=M.top+(i/5)*ch;ctx.beginPath();ctx.moveTo(M.left,y);ctx.lineTo(w-M.right,y);ctx.stroke();ctx.fillText('$'+(v/1000).toFixed(0)+'K',M.left-8,y+3)}
+  // Bars
+  const bw=Math.min(cw/labels.length*0.55,50);
+  labels.forEach((l,i)=>{const x=M.left+(i+0.5)*(cw/labels.length)-bw/2;let yB=M.top+ch;
+    datasets.forEach(ds=>{const bH=(ds.data[i]/mx)*ch,y=yB-bH;ctx.fillStyle=ds.color;ctx.globalAlpha=0.85;ctx.fillRect(x,y,bw,bH);ctx.globalAlpha=1;yB=y});
+    ctx.fillStyle='#6b7594';ctx.textAlign='center';ctx.font='11px DM Mono';ctx.fillText(l,x+bw/2,h-M.bottom+20)});
+  // Right axis for line
+  if(lineData){
+    const lmx=Math.max(...lineData)*1.15;
+    ctx.textAlign='left';ctx.fillStyle='#d4dae8';
+    for(let i=0;i<=4;i++){const v=lmx-(lmx*i/4),y=M.top+(i/4)*ch;ctx.fillText(lineFmtY?lineFmtY(v):v.toFixed(0),w-M.right+8,y+3)}
+    // Line
+    ctx.strokeStyle='#d4dae8';ctx.lineWidth=2.5;ctx.setLineDash([6,4]);ctx.beginPath();
+    lineData.forEach((v,i)=>{const x=M.left+(i+0.5)*(cw/labels.length),y=M.top+((lmx-v)/lmx)*ch;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.stroke();ctx.setLineDash([]);
+    lineData.forEach((v,i)=>{const x=M.left+(i+0.5)*(cw/labels.length),y=M.top+((lmx-v)/lmx)*ch;
+      ctx.fillStyle='#d4dae8';ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0c0f14';ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#d4dae8';ctx.textAlign='center';ctx.font='10px DM Mono';ctx.fillText(Math.round(v).toLocaleString(),x,y-10)});
+  }
+  // Legend
+  let lx=M.left;datasets.forEach(ds=>{ctx.fillStyle=ds.color;ctx.fillRect(lx,8,10,10);ctx.fillStyle='#6b7594';ctx.textAlign='left';ctx.font='10px DM Mono';ctx.fillText(ds.label,lx+14,17);lx+=ctx.measureText(ds.label).width+24});
+  if(lineLabel){ctx.strokeStyle='#d4dae8';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(lx,13);ctx.lineTo(lx+16,13);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#d4dae8';ctx.fillText(lineLabel,lx+20,17)}
+}
+
+function drawStackedBar(cid,labels,datasets){drawStackedBarWithLine(cid,labels,datasets)}
+
+function drawGroupedBar(cid,labels,datasets,opts={}){
+  const{ctx,w,h}=getCtx(cid),M={top:30,right:20,bottom:40,left:65},cw=w-M.left-M.right,ch=h-M.top-M.bottom;
+  ctx.clearRect(0,0,w,h);let all=[];datasets.forEach(d=>all.push(...d.data));
+  let mx=Math.max(...all,0)*1.15,mn=Math.min(...all,0)*1.15;if(mn>=0)mn=0;if(mx<=0)mx=Math.max(...all.map(Math.abs))*0.1;
+  const rng=mx-mn||1,zY=M.top+(mx/rng)*ch;
+  ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='right';
+  for(let i=0;i<=5;i++){const v=mx-(rng*i/5),y=M.top+(i/5)*ch;ctx.beginPath();ctx.moveTo(M.left,y);ctx.lineTo(w-M.right,y);ctx.stroke();ctx.fillText(opts.fmtY?opts.fmtY(v):'$'+v.toFixed(0),M.left-8,y+3)}
+  if(mn<0){ctx.strokeStyle='#6b7594';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(M.left,zY);ctx.lineTo(w-M.right,zY);ctx.stroke()}
+  const gw=cw/labels.length,bw=Math.min(gw*0.7/datasets.length,30);
+  labels.forEach((l,i)=>{const gx=M.left+i*gw+gw/2;
+    datasets.forEach((ds,j)=>{const v=ds.data[i],bH=Math.abs(v/rng*ch),x=gx-(datasets.length*bw)/2+j*bw+1,y=v>=0?zY-bH:zY;
+      ctx.fillStyle=typeof ds.color==='function'?ds.color(v):ds.color;ctx.globalAlpha=0.85;ctx.fillRect(x,y,bw-2,bH);ctx.globalAlpha=1;
+      ctx.fillStyle='#d4dae8';ctx.textAlign='center';ctx.font='9px DM Mono';ctx.fillText('$'+v.toFixed(0),x+(bw-2)/2,v>=0?y-4:y+bH+12)});
+    ctx.fillStyle='#6b7594';ctx.textAlign='center';ctx.font='11px DM Mono';ctx.fillText(l,gx,h-M.bottom+20)});
+  let lx=M.left;datasets.forEach(ds=>{ctx.fillStyle=typeof ds.color==='function'?ds.color(1):ds.color;ctx.fillRect(lx,8,10,10);ctx.fillStyle='#6b7594';ctx.textAlign='left';ctx.font='10px DM Mono';ctx.fillText(ds.label,lx+14,17);lx+=ctx.measureText(ds.label).width+28})
+}
+
+// === PRICING ===
+function updatePricing(){
+  const af=+document.getElementById('s-annual-fee').value,hr=+document.getElementById('s-hourly-rate').value,mr=+document.getElementById('s-mile-rate').value,apf=+document.getElementById('s-app-fee').value,tpm=+document.getElementById('s-trips').value,att=+document.getElementById('s-attrition').value;
+  document.getElementById('v-annual-fee').textContent='$'+af;document.getElementById('v-hourly-rate').textContent='$'+hr.toFixed(2);document.getElementById('v-mile-rate').textContent='$'+mr.toFixed(2);document.getElementById('v-app-fee').textContent='$'+apf;document.getElementById('v-trips').textContent=tpm.toFixed(1);document.getElementById('v-attrition').textContent=(att*100).toFixed(0)+'%';
+  const Y=runModel({annualFee:af,hourlyRate:hr,mileRate:mr,appFee:apf,tripsPerMonth:tpm,attrition:att}),y3=Y[2],y5=Y[4],be=Y.findIndex(y=>y.ni>0);
+  document.getElementById('pricing-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Year 3 Revenue</div><div class="kpi-value">$'+(y3.totalR/1000).toFixed(0)+'K</div></div><div class="kpi"><div class="kpi-label">Year 3 Net Income</div><div class="kpi-value '+(y3.ni>=0?'positive':'negative')+'">$'+(y3.ni/1000).toFixed(0)+'K</div></div><div class="kpi"><div class="kpi-label">Year 5 Net Income</div><div class="kpi-value '+(y5.ni>=0?'positive':'negative')+'">$'+(y5.ni/1000).toFixed(0)+'K</div></div><div class="kpi"><div class="kpi-label">Breakeven Year</div><div class="kpi-value">'+(be>=0?'Year '+(be+1):'Never')+'</div></div><div class="kpi"><div class="kpi-label">Year 1 CAC</div><div class="kpi-value">$'+Y[0].cac.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">5-Yr Cumulative P&L</div><div class="kpi-value '+(Y.reduce((s,y)=>s+y.ni,0)>=0?'positive':'negative')+'">$'+(Y.reduce((s,y)=>s+y.ni,0)/1000).toFixed(0)+'K</div></div>';
+  const L=['Year 1','Year 2','Year 3','Year 4','Year 5'];
+  drawStackedBarWithLine('chart-revenue',L,
+    [{label:'Hourly',data:Y.map(y=>y.hourlyR),color:'#5b8def'},{label:'Mileage',data:Y.map(y=>y.mileR),color:'#a78bfa'},{label:'Fees',data:Y.map(y=>y.feeR+y.appR),color:'#e8a44a'},{label:'Interest',data:Y.map(y=>y.intR),color:'#6b7594'}],
+    Y.map(y=>y.end),'Members (end of yr)');
+  drawBarChart('chart-netincome',L,[{label:'Net Income',data:Y.map(y=>y.ni),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true});
+  drawLineChart('chart-revvscost',L,[{label:'Total Revenue',data:Y.map(y=>y.totalR),color:'#4ecb8d'},{label:'Total Costs',data:Y.map(y=>y.tC),color:'#e85a6f'}]);
+}
+function resetPricing(){['s-annual-fee','s-hourly-rate','s-mile-rate','s-app-fee','s-trips','s-attrition'].forEach(function(id,i){document.getElementById(id).value=[75,5.5,0.40,25,4,0.15][i]});updatePricing()}
+
+// === COST STRUCTURE ===
+function initCosts(){
+  const Y=runModel({annualFee:75,hourlyRate:5.5,mileRate:0.4,appFee:25,tripsPerMonth:4,attrition:0.15});
+  const L=['Year 1','Year 2','Year 3','Year 4','Year 5'];
+  drawStackedBarWithLine('chart-cost-stack',L,
+    [{label:'Billing (per mbr)',data:Y.map(y=>y.billing),color:'#e8a44a'},
+     {label:'Processing (per new mbr)',data:Y.map(y=>y.bgcheck),color:'#5b8def'},
+     {label:'Marketing',data:Y.map(y=>y.mkt),color:'#a78bfa'},
+     {label:'Office fixed',data:Y.map(y=>y.offF),color:'#4ecb8d'}],
+    Y.map(y=>y.end),'Members (end of yr)');
+
+  // Cost per member
+  const cpm=Y.map(y=>y.localOH/y.avg);
+  drawBarChart('chart-cost-per-member',L,[{label:'Local OH / Avg Member / Yr',data:cpm,color:'#e8a44a'}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
+
+  // CAC
+  const cac=Y.map(y=>y.cac);
+  drawBarChart('chart-cac',L,[{label:'CAC',data:cac,color:function(v){return v>60?'#e85a6f':'#5b8def'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
+
+  // Detail table
+  var html='<table class="data-table"><thead><tr><th>Category</th>';
+  L.forEach(function(l){html+='<th style="text-align:right">'+l+'</th>'});
+  html+='</tr></thead><tbody>';
+  var rows=[
+    {n:'Billing ($24/mbr/yr)',d:Y.map(function(y){return y.billing}),c:''},
+    {n:'Background checks ($20/new)',d:Y.map(function(y){return y.bgcheck}),c:''},
+    {n:'Marketing',d:Y.map(function(y){return y.mkt}),c:''},
+    {n:'Office fixed',d:Y.map(function(y){return y.offF}),c:''},
+    {n:'Total local office',d:Y.map(function(y){return y.localOH}),c:'total-row'},
+    {n:'',d:null,c:''},
+    {n:'Avg members',d:Y.map(function(y){return y.avg}),c:'',f:function(v){return Math.round(v).toLocaleString()}},
+    {n:'New members',d:Y.map(function(y){return y.nw}),c:'',f:function(v){return Math.round(v).toLocaleString()}},
+    {n:'CAC (mkt+processing/new)',d:Y.map(function(y){return y.cac}),c:'',f:function(v){return '$'+v.toFixed(2)}},
+    {n:'Local OH per member/yr',d:Y.map(function(y){return y.localOH/y.avg}),c:'',f:function(v){return '$'+v.toFixed(0)}}
+  ];
+  rows.forEach(function(r){
+    if(!r.d){html+='<tr><td colspan="6" style="border:none;height:8px"></td></tr>';return}
+    html+='<tr class="'+r.c+'"><td>'+r.n+'</td>';
+    r.d.forEach(function(v){var fmt=r.f?r.f(v):'$'+Math.round(v).toLocaleString();html+='<td class="num">'+fmt+'</td>'});
+    html+='</tr>'});
+  html+='</tbody></table>';
+  document.getElementById('cost-detail-table').innerHTML=html;
+}
+
+// === PLAN VS ACTUAL ===
+function initPlanVsActual(){
+  document.getElementById('fishbone-plan').innerHTML='<div class="connector-line"><span class="pos">Margin/member/mo: $90.26</span><br>\u251C\u2500 Revenue/member: <span class="val">$130.45</span><br>\u2502  \u251C\u2500 Monthly fee: <span class="val">$6.25</span><br>\u2502  \u251C\u2500 Usage: <span class="val">$123.20</span><br>\u2502  \u2502  \u2514\u2500 4 trips x (4h x $5.50 + 22mi x $0.40)<br>\u2502  \u2514\u2500 Interest: <span class="val">$1.00</span><br>\u2514\u2500 Car cost/member: <span class="val">$40.19</span><br>   \u251C\u2500 Car cost/mo: <span class="dim">$723</span><br>   \u2514\u2500 Members/car: <span class="dim">18</span></div>';
+  document.getElementById('fishbone-actual').innerHTML='<div class="connector-line"><span class="neg">Margin/member/mo: $26.56</span><br>\u251C\u2500 Revenue/member: <span class="val">$93.70</span><br>\u2502  \u251C\u2500 Monthly fee: <span class="val">$6.25</span><br>\u2502  \u251C\u2500 Usage: <span class="val">$86.35</span><br>\u2502  \u2502  \u251C\u2500 Hourly: 1.29 x $42.78 = <span class="pos">$55.00</span><br>\u2502  \u2502  \u2514\u2500 Daily:  0.69 x $45.45 = <span class="val">$31.35</span><br>\u2502  \u2514\u2500 Interest: <span class="val">$1.10</span><br>\u2514\u2500 Car cost/member: <span class="val">$67.14</span><br>   \u251C\u2500 Car cost/mo: <span class="dim">$778</span><br>   \u2514\u2500 Members/car: <span class="dim">11.6</span></div>';
+  drawVarianceWaterfall();updateDailyExplorer();
+}
+
+function drawVarianceWaterfall(){
+  var V=[{l:'Planned\nMargin',v:83.01,t:'total'},{l:'Trip\nFrequency',v:-42.02,t:'d'},{l:'Rev/Use\nGain',v:25.51,t:'d'},{l:'Cost/Use\nIncrease',v:-19.40,t:'d'},{l:'Car Cost\nAllocation',v:-27.88,t:'d'},{l:'Actual\nMargin',v:19.22,t:'total'}];
+  var R=getCtx('chart-variance'),ctx=R.ctx,w=R.w,h=R.h,M={top:20,right:20,bottom:55,left:65},cw=w-M.left-M.right,ch=h-M.top-M.bottom,mx=100,mn=-10,rng=mx-mn,zY=M.top+(mx/rng)*ch;
+  ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='right';
+  for(var i=0;i<=5;i++){var v=mx-(rng*i/5),y=M.top+(i/5)*ch;ctx.beginPath();ctx.moveTo(M.left,y);ctx.lineTo(w-M.right,y);ctx.stroke();ctx.fillText('$'+v.toFixed(0),M.left-8,y+3)}
+  var bw=Math.min(cw/V.length*0.6,60),run=0;
+  V.forEach(function(vi,idx){var x=M.left+(idx+0.5)*(cw/V.length)-bw/2;
+    if(vi.t==='total'){var bH=Math.abs(vi.v/rng*ch),ty=zY-bH;ctx.fillStyle=idx===0?'#5b8def':(vi.v>=0?'#4ecb8d':'#e85a6f');ctx.globalAlpha=0.85;ctx.fillRect(x,ty,bw,bH);ctx.globalAlpha=1;run=vi.v}
+    else{var sY=zY-(run/rng*ch);run+=vi.v;var eY=zY-(run/rng*ch),ty=Math.min(sY,eY),bH=Math.abs(eY-sY);ctx.fillStyle=vi.v>=0?'#4ecb8d':'#e85a6f';ctx.globalAlpha=0.85;ctx.fillRect(x,ty,bw,bH);ctx.globalAlpha=1;
+      if(idx<V.length-1){ctx.strokeStyle='#6b7594';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x+bw,eY);ctx.lineTo(M.left+(idx+1.5)*(cw/V.length)-bw/2,eY);ctx.stroke();ctx.setLineDash([])}}
+    ctx.fillStyle='#d4dae8';ctx.textAlign='center';ctx.font='10px DM Mono';var ly=vi.t==='total'?zY-(vi.v/rng*ch)-8:zY-(run/rng*ch)-8;
+    ctx.fillText('$'+(vi.v>=0?'+':'')+vi.v.toFixed(1),x+bw/2,vi.v>=0||vi.t==='total'?ly:ly+28);
+    ctx.fillStyle='#6b7594';ctx.font='10px DM Mono';vi.l.split('\n').forEach(function(ln,li){ctx.fillText(ln,x+bw/2,h-M.bottom+16+li*14)})})
+}
+
+function updateDailyExplorer(){
+  var cap=+document.getElementById('s-daily-cap').value,fm=+document.getElementById('s-free-miles').value,er=+document.getElementById('s-excess-rate').value;
+  document.getElementById('v-daily-cap').textContent='$'+cap;document.getElementById('v-free-miles').textContent=fm;document.getElementById('v-excess-rate').textContent='$'+er.toFixed(2);
+  var avgMi=94,exM=Math.max(0,avgMi-fm),dMileRev=exM*er,dRevUse=cap+dMileRev,dCostUse=56.53,dMarginUse=dRevUse-dCostUse;
+  var hRevUse=42.78,hCostUse=21.90,hMarginUse=20.89,hUPM=1.2854,dUPM=0.6899;
+  var hMM=hMarginUse*hUPM,dMM=dMarginUse*dUPM,blended=hMM+dMM;
+  document.getElementById('daily-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Daily Rev / Use</div><div class="kpi-value">$'+dRevUse.toFixed(2)+'</div><div class="kpi-sub">cap $'+cap+' + '+exM.toFixed(0)+'mi x $'+er.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Daily Margin / Use</div><div class="kpi-value '+(dMarginUse>=0?'positive':'negative')+'">$'+dMarginUse.toFixed(2)+'</div><div class="kpi-sub">was -$11.08</div></div><div class="kpi"><div class="kpi-label">Blended Margin / Mbr / Mo</div><div class="kpi-value '+(blended>=0?'positive':'negative')+'">$'+blended.toFixed(2)+'</div><div class="kpi-sub">was $19.22 | plan $83.01</div></div><div class="kpi"><div class="kpi-label">Daily Margin / Mbr / Mo</div><div class="kpi-value '+(dMM>=0?'positive':'negative')+'">$'+dMM.toFixed(2)+'</div><div class="kpi-sub">was -$7.64</div></div><div class="kpi"><div class="kpi-label">Excess Miles / Trip</div><div class="kpi-value">'+exM.toFixed(0)+'</div><div class="kpi-sub">'+avgMi+' driven - '+fm+' free</div></div>';
+  drawGroupedBar('chart-daily-margin',['Revenue','Car Cost','Margin'],
+    [{label:'Hourly Use',data:[hRevUse,hCostUse,hMarginUse],color:'#5b8def'},
+     {label:'Daily Use',data:[dRevUse,dCostUse,dMarginUse],color:function(v){return v<0?'#e85a6f':'#e8a44a'}}],{fmtY:function(v){return '$'+v.toFixed(0)}});
+  var caps=[44,50,55,60,65,70,80,90,100];
+  var bd=caps.map(function(c){var em=Math.max(0,avgMi-fm),dr=c+em*er,dm=dr-dCostUse;return hMarginUse*hUPM+dm*dUPM});
+  drawBarChart('chart-daily-blended',caps.map(function(c){return '$'+c}),[{label:'Blended $/Mbr/Mo',data:bd,color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
+}
+
+// === UNIT ECONOMICS ===
+var unitView='use';
+function setUnitView(v,btn){unitView=v;document.querySelectorAll('#panel-uniteconomics .toggle-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active');updateUnit()}
+function updateUnit(){
+  var mpc=+document.getElementById('s-mpc').value,util=+document.getElementById('s-util').value,cc=+document.getElementById('s-carcost').value,ru=+document.getElementById('s-revuse').value,hpu=+document.getElementById('s-hpu').value,upm=+document.getElementById('s-upm').value;
+  document.getElementById('v-mpc').textContent=mpc;document.getElementById('v-util').textContent=(util*100).toFixed(0)+'%';document.getElementById('v-carcost').textContent='$'+cc;document.getElementById('v-revuse').textContent='$'+ru.toFixed(2);document.getElementById('v-hpu').textContent=hpu.toFixed(1);document.getElementById('v-upm').textContent=upm.toFixed(1);
+  var usH=24*30*util,maxMPC=usH/(hpu*upm),cph=cc/usH,cpu=cph*hpu,mpu=ru-cpu;
+  var rMM=ru*upm,cMM=cc/mpc,mMM=rMM-cMM,uCar=mpc*upm,rCar=rMM*mpc,mCar=rCar-cc;
+  var gm=ru>0?mpu/ru*100:0,capW=mpc>maxMPC;
+  if(unitView==='use'){
+    document.getElementById('unit-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Revenue / Use</div><div class="kpi-value">$'+ru.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Cost / Use</div><div class="kpi-value">$'+cpu.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Margin / Use</div><div class="kpi-value '+(mpu>=0?'positive':'negative')+'">$'+mpu.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Gross Margin %</div><div class="kpi-value '+(gm>=0?'positive':'negative')+'">'+gm.toFixed(1)+'%</div></div><div class="kpi"><div class="kpi-label">Cost / Hour</div><div class="kpi-value">$'+cph.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Max Members/Car</div><div class="kpi-value">'+maxMPC.toFixed(1)+(capW?' \u26A0\uFE0F':'')+'</div></div>';
+    document.getElementById('unit-view-content').innerHTML='<div class="two-col"><div class="chart-container"><div class="chart-title">Cost per Hour vs Revenue per Hour at Varying Utilization</div><canvas id="chart-u1" height="260"></canvas></div><div class="chart-container"><div class="chart-title">Margin per Use at Varying Hours per Use</div><canvas id="chart-u2" height="260"></canvas></div></div>';
+    var uR=[0.15,0.20,0.25,0.30,0.35,0.40,0.50,0.60],rph=ru/hpu;
+    drawLineChart('chart-u1',uR.map(function(u){return (u*100).toFixed(0)+'%'}),[{label:'Cost/Hour',data:uR.map(function(u){return cc/(24*30*u)}),color:'#e85a6f'},{label:'Revenue/Hour',data:uR.map(function(){return rph}),color:'#4ecb8d'}],{fmtY:function(v){return '$'+v.toFixed(1)}});
+    var hR=[2,3,4,5,6,8,10,12,16];
+    drawBarChart('chart-u2',hR.map(function(h){return h+'h'}),[{label:'Margin/Use',data:hR.map(function(h){return ru-cph*h}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
+    document.getElementById('unit-annotation').textContent='Per-use view: each use consumes car-hours. Cost per use = (monthly car cost / usable hours) x hours per use. Short uses have low cost and healthy margin. Long daily uses (16h) can exceed revenue.';
+  } else if(unitView==='member'){
+    document.getElementById('unit-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Revenue / Mbr / Mo</div><div class="kpi-value">$'+rMM.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Car Cost / Mbr / Mo</div><div class="kpi-value">$'+cMM.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Margin / Mbr / Mo</div><div class="kpi-value '+(mMM>=0?'positive':'negative')+'">$'+mMM.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Gross Margin %</div><div class="kpi-value '+(gm>=0?'positive':'negative')+'">'+gm.toFixed(1)+'%</div></div><div class="kpi"><div class="kpi-label">Uses / Mbr / Mo</div><div class="kpi-value">'+upm.toFixed(1)+'</div></div><div class="kpi"><div class="kpi-label">Max Members/Car</div><div class="kpi-value">'+maxMPC.toFixed(1)+(capW?' \u26A0\uFE0F':'')+'</div></div>';
+    document.getElementById('unit-view-content').innerHTML='<div class="two-col"><div class="chart-container"><div class="chart-title">Monthly Margin per Member at Varying Members per Car</div><canvas id="chart-u1" height="260"></canvas></div><div class="chart-container"><div class="chart-title">Revenue vs Car Cost per Member at Varying Uses/Mo</div><canvas id="chart-u2" height="260"></canvas></div></div>';
+    var mR=[8,10,12,14,16,18,20,24];
+    drawBarChart('chart-u1',mR.map(function(n){return ''+n}),[{label:'Margin/Mbr/Mo',data:mR.map(function(n){return rMM-cc/n}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
+    var uR2=[1,2,3,4,5,6,7,8];
+    drawLineChart('chart-u2',uR2.map(function(u){return ''+u}),[{label:'Revenue/Mbr',data:uR2.map(function(u){return ru*u}),color:'#4ecb8d'},{label:'Car Cost/Mbr',data:uR2.map(function(){return cMM}),color:'#e85a6f'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
+    document.getElementById('unit-annotation').textContent='Per-member view: car cost is shared across members. Revenue scales with usage frequency, but car cost per member is fixed by members-per-car ratio. More members lowers allocation but requires utilization headroom.';
+  } else {
+    document.getElementById('unit-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Revenue / Car / Mo</div><div class="kpi-value">$'+rCar.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Car Cost / Mo</div><div class="kpi-value">$'+cc+'</div></div><div class="kpi"><div class="kpi-label">Margin / Car / Mo</div><div class="kpi-value '+(mCar>=0?'positive':'negative')+'">$'+mCar.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Gross Margin %</div><div class="kpi-value '+(gm>=0?'positive':'negative')+'">'+gm.toFixed(1)+'%</div></div><div class="kpi"><div class="kpi-label">Uses / Car / Mo</div><div class="kpi-value">'+uCar.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Usable Hrs / Car / Mo</div><div class="kpi-value">'+usH.toFixed(0)+'</div></div>';
+    document.getElementById('unit-view-content').innerHTML='<div class="two-col"><div class="chart-container"><div class="chart-title">Monthly Margin per Car at Varying Members per Car</div><canvas id="chart-u1" height="260"></canvas></div><div class="chart-container"><div class="chart-title">Revenue per Car vs Fixed Car Cost at Varying Utilization</div><canvas id="chart-u2" height="260"></canvas></div></div><div class="card" style="margin-top:8px"><div class="card-label">Overhead Coverage - How Many Cars to Break Even?</div><table class="data-table"><thead><tr><th>Cost Layer</th><th style="text-align:right">Annual Cost</th><th style="text-align:right">Cars Needed</th></tr></thead><tbody><tr><td>Local office overhead</td><td class="num">$93,356</td><td class="num">'+(mCar>0?(93356/(mCar*12)).toFixed(1):'inf')+'</td></tr><tr><td>Corporate overhead</td><td class="num">$140,600</td><td class="num">'+(mCar>0?(140600/(mCar*12)).toFixed(1):'inf')+'</td></tr><tr class="total-row"><td>Total overhead</td><td class="num">$233,956</td><td class="num">'+(mCar>0?(233956/(mCar*12)).toFixed(1):'inf')+'</td></tr></tbody></table></div>';
+    var mR2=[8,10,12,14,16,18,20,24];
+    drawBarChart('chart-u1',mR2.map(function(n){return n+' mbrs'}),[{label:'Margin/Car/Mo',data:mR2.map(function(n){return ru*upm*n-cc}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
+    var uR3=[0.15,0.20,0.25,0.30,0.35,0.40,0.50,0.60];
+    drawLineChart('chart-u2',uR3.map(function(u){return (u*100).toFixed(0)+'%'}),[{label:'Revenue/Car',data:uR3.map(function(u){var mm=24*30*u/(hpu*upm);return ru*upm*Math.min(mpc,mm)}),color:'#4ecb8d'},{label:'Car Cost',data:uR3.map(function(){return cc}),color:'#e85a6f'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
+    document.getElementById('unit-annotation').textContent='Per-car view: the fundamental asset unit. Margin per car must cover fixed overheads (local office + corporate). The table shows how many margin-positive cars are needed for overall breakeven.';
+  }
+}
+function resetUnit(){['s-mpc','s-util','s-carcost','s-revuse','s-hpu','s-upm'].forEach(function(id,i){document.getElementById(id).value=[18,0.40,723,30.8,4,4][i]});updateUnit()}
+
+// === SENSITIVITY ===
+function initSensitivity(){
+  var base=runModel({annualFee:75,hourlyRate:5.5,mileRate:0.4,appFee:25,tripsPerMonth:4,attrition:0.15}),bY3=base[2].ni;
+  var ps=[{n:'Hourly Rate',k:'hourlyRate',l:3,h:8},{n:'Trips/Mo',k:'tripsPerMonth',l:2,h:6},{n:'Annual Fee',k:'annualFee',l:0,h:200},{n:'Attrition',k:'attrition',l:0.25,h:0.05},{n:'Mile Rate',k:'mileRate',l:0.20,h:0.60},{n:'App Fee',k:'appFee',l:0,h:50}];
+  var ds=ps.map(function(p){var bp={annualFee:75,hourlyRate:5.5,mileRate:0.4,appFee:25,tripsPerMonth:4,attrition:0.15};bp[p.k]=p.l;var lR=runModel(bp)[2].ni-bY3;bp[p.k]=p.h;var hR=runModel(bp)[2].ni-bY3;return{n:p.n,lo:Math.min(lR,hR),hi:Math.max(lR,hR)}});
+  ds.sort(function(a,b){return(b.hi-b.lo)-(a.hi-a.lo)});
+  var R=getCtx('chart-tornado'),ctx=R.ctx,w=R.w,h=R.h,M={top:20,right:30,bottom:30,left:120},cw=w-M.left-M.right,ch=h-M.top-M.bottom;
+  var ma=Math.max.apply(null,ds.map(function(d){return Math.max(Math.abs(d.lo),Math.abs(d.hi))}))*1.15,cx=M.left+cw/2,bH=Math.min(ch/ds.length*0.7,30),gap=ch/ds.length;
+  ctx.strokeStyle='#6b7594';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx,M.top);ctx.lineTo(cx,h-M.bottom);ctx.stroke();
+  ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='center';
+  [-ma,-ma/2,0,ma/2,ma].forEach(function(v){var x=cx+(v/ma)*(cw/2);ctx.beginPath();ctx.moveTo(x,M.top);ctx.lineTo(x,h-M.bottom);ctx.stroke();ctx.fillText('$'+(v/1000).toFixed(0)+'K',x,h-M.bottom+16)});
+  ds.forEach(function(d,i){var y=M.top+i*gap+gap/2-bH/2;ctx.fillStyle='#e85a6f';ctx.globalAlpha=0.8;ctx.fillRect(cx,y,(d.lo/ma)*(cw/2),bH);ctx.fillStyle='#4ecb8d';ctx.fillRect(cx,y,(d.hi/ma)*(cw/2),bH);ctx.globalAlpha=1;ctx.fillStyle='#d4dae8';ctx.textAlign='right';ctx.font='12px DM Mono';ctx.fillText(d.n,M.left-8,y+bH/2+4)});
+  var hR=[3,4,5,5.5,6,7,8,10],mps=[10,12,14,16,18,20,22,25];
+  var html='<div class="heatmap-grid" style="grid-template-columns:80px repeat('+hR.length+',1fr)"><div class="heatmap-header">MPC / Rate</div>';
+  hR.forEach(function(r){html+='<div class="heatmap-header">$'+r+'</div>'});
+  mps.forEach(function(mp){html+='<div class="heatmap-header" style="text-align:right">'+mp+'</div>';hR.forEach(function(rate){
+    var tr=882*75+882*12*4*22*0.40+882*12*4*4*rate+180*25+882*300*0.04,ni=(tr-49*TOTAL_VAR_PER_CAR-233956)/1000;
+    var int=Math.min(Math.abs(ni)/800,1),bg,fg;
+    if(ni>=0){bg='rgba(78,203,141,'+(0.1+int*0.5)+')';fg=int>0.3?'#0c0f14':'#4ecb8d'}else{bg='rgba(232,90,111,'+(0.1+int*0.5)+')';fg=int>0.3?'#0c0f14':'#e85a6f'}
+    html+='<div class="heatmap-cell" style="background:'+bg+';color:'+fg+'">'+ni.toFixed(0)+'</div>'})});
+  html+='</div>';document.getElementById('heatmap-container').innerHTML=html;
+}
+
+// === LIFETIME VALUE ===
+function updateLTV(){
+  var mm=+document.getElementById('s-ltv-margin').value,aa=+document.getElementById('s-ltv-attrition').value,cac=+document.getElementById('s-ltv-cac').value;
+  document.getElementById('v-ltv-margin').textContent='$'+mm.toFixed(2);document.getElementById('v-ltv-attrition').textContent=(aa*100).toFixed(0)+'%';document.getElementById('v-ltv-cac').textContent='$'+cac;
+  var mA=1-Math.pow(1-aa,1/12),aL=1/mA,lc=mm*aL,net=lc-cac,rat=lc/cac,pb=cac/mm;
+  document.getElementById('ltv-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Avg Lifetime (months)</div><div class="kpi-value">'+aL.toFixed(1)+'</div></div><div class="kpi"><div class="kpi-label">Lifecycle Margin</div><div class="kpi-value '+(lc>=0?'positive':'negative')+'">$'+lc.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Net LTV</div><div class="kpi-value '+(net>=0?'positive':'negative')+'">$'+net.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">LTV : CAC</div><div class="kpi-value">'+rat.toFixed(1)+'x</div></div><div class="kpi"><div class="kpi-label">Payback Period</div><div class="kpi-value">'+(pb<1?'<1':pb.toFixed(1))+' mo</div></div>';
+  var mos=Array.from({length:61},function(_,i){return i}),surv=mos.map(function(m){return Math.pow(1-mA,m)*100}),sM=[0,12,24,36,48,60];
+  drawLineChart('chart-survival',sM.map(function(m){return 'Mo '+m}),[{label:'Remaining %',data:sM.map(function(m){return surv[m]}),color:'#e8a44a'}],{fmtY:function(v){return v.toFixed(0)+'%'}});
+  var cum=mos.map(function(m){var t=-cac;for(var i=1;i<=m;i++)t+=mm*Math.pow(1-mA,i);return t}),sM2=[0,6,12,18,24,30,36,42,48,54,60];
+  drawLineChart('chart-cumulative',sM2.map(function(m){return ''+m}),[{label:'Cumulative $',data:sM2.map(function(m){return cum[m]}),color:'#5b8def'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
+}
+function resetLTV(){['s-ltv-margin','s-ltv-attrition','s-ltv-cac'].forEach(function(id,i){document.getElementById(id).value=[90,0.15,43][i]});updateLTV()}
+
+// === NAV ===
+function showPanel(id,btn){document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});document.getElementById('panel-'+id).classList.add('active');btn.classList.add('active');
+  if(id==='pricing')updatePricing();if(id==='costs')initCosts();if(id==='planvactual')initPlanVsActual();if(id==='uniteconomics')updateUnit();if(id==='sensitivity')initSensitivity();if(id==='lifetime')updateLTV()}
+var rT;window.addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(function(){var a=document.querySelector('.panel.active');if(a.id==='panel-pricing')updatePricing();if(a.id==='panel-costs')initCosts();if(a.id==='panel-planvactual')initPlanVsActual();if(a.id==='panel-uniteconomics')updateUnit();if(a.id==='panel-sensitivity')initSensitivity();if(a.id==='panel-lifetime')updateLTV()},200)});
+updatePricing();
+</script>
+</body>
+</html>
