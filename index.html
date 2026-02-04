@@ -45,7 +45,8 @@ canvas{width:100%!important}
 .data-table td.positive{color:var(--positive)}.data-table td.negative{color:var(--negative)}
 .data-table tr.total-row td{font-weight:500;color:var(--text-bright);border-top:2px solid var(--border)}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:900px){.two-col{grid-template-columns:1fr}.controls-grid{grid-template-columns:1fr}.header{padding:24px 20px 18px}.tabs{padding:0 20px}.panel{padding:20px}}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}.three-col{grid-template-columns:1fr}.controls-grid{grid-template-columns:1fr}.header{padding:24px 20px 18px}.tabs{padding:0 20px}.panel{padding:20px}}
 @media(max-width:600px){
   body{font-size:14px}
   .header{padding:20px 16px 16px;flex-direction:column;align-items:flex-start;gap:8px}
@@ -132,15 +133,16 @@ canvas{width:100%!important}
   <button class="tab active" onclick="showPanel('pricing',this)">Pricing Strategy</button>
   <button class="tab" onclick="showPanel('buildup',this)">Member Build-up</button>
   <button class="tab" onclick="showPanel('costs',this)">Cost Structure</button>
-  <button class="tab" onclick="showPanel('planvactual',this)">Plan vs Actual</button>
   <button class="tab" onclick="showPanel('uniteconomics',this)">Unit Economics</button>
   <button class="tab" onclick="showPanel('sensitivity',this)">Sensitivity</button>
+  <button class="tab" onclick="showPanel('planvactual',this)">Plan vs Actual</button>
   <button class="tab" onclick="showPanel('lifetime',this)">Lifetime Value</button>
 </div>
 
 <!-- PANEL 1: PRICING -->
 <div class="panel active" id="panel-pricing">
   <div class="flex-between"><div class="section-title">Pricing Structure</div><button class="reset-btn" onclick="resetPricing()">Reset to defaults</button></div>
+  <p style="color:var(--text-dim);font-size:12px;margin-bottom:20px;">Adjust pricing levers — membership fees, hourly rates, mileage charges — and see how they flow through to 5-year revenue projections, net income, and breakeven timing.</p>
   <div class="controls-grid">
     <div class="control-group"><label>Annual membership fee</label><div class="value-display" id="v-annual-fee">$75</div><input type="range" id="s-annual-fee" min="0" max="500" step="25" value="75" oninput="updatePricing()"></div>
     <div class="control-group"><label>Hourly rate</label><div class="value-display" id="v-hourly-rate">$5.50</div><input type="range" id="s-hourly-rate" min="0.5" max="12" step="0.5" value="5.5" oninput="updatePricing()"></div>
@@ -150,11 +152,11 @@ canvas{width:100%!important}
     <div class="control-group"><label>Attrition rate (annual)</label><div class="value-display" id="v-attrition">15%</div><input type="range" id="s-attrition" min="0.02" max="0.40" step="0.01" value="0.15" oninput="updatePricing()"></div>
   </div>
   <div class="kpi-row" id="pricing-kpis"></div>
-  <div class="two-col">
-    <div class="chart-container"><div class="chart-title">Revenue Breakdown + Members · 5-Year Projection</div><canvas id="chart-revenue" height="300"></canvas></div>
-    <div class="chart-container"><div class="chart-title">Net Income Before Tax</div><canvas id="chart-netincome" height="300"></canvas></div>
+  <div class="three-col">
+    <div class="chart-container"><div class="chart-title">Revenue Breakdown + Members · 5-Year Projection</div><canvas id="chart-revenue" height="200"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Net Income Before Tax</div><canvas id="chart-netincome" height="200"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Revenue vs Direct (Car) Costs</div><canvas id="chart-revvscost" height="200"></canvas></div>
   </div>
-  <div class="chart-container"><div class="chart-title">Revenue vs Direct (Car) Costs</div><canvas id="chart-revvscost" height="240"></canvas></div>
   <div class="annotation">Adjust pricing levers to explore the trade-off: higher membership fees provide predictable recurring revenue but may suppress sign-ups, while usage-based pricing aligns revenue with demand but introduces volatility. Net Income (shown above) includes local office overhead in addition to car costs.</div>
 </div>
 
@@ -192,18 +194,25 @@ canvas{width:100%!important}
 
   <div class="kpi-row" id="buildup-kpis"></div>
 
-  <div class="two-col">
-    <div class="chart-container"><div class="chart-title">Member Growth — End of Year Totals</div><canvas id="chart-member-growth" height="280"></canvas></div>
-    <div class="chart-container"><div class="chart-title">Cars & Members per Car</div><canvas id="chart-cars" height="280"></canvas></div>
-  </div>
-  <div class="two-col">
-    <div class="chart-container"><div class="chart-title">Marketing Spend vs Cost per New Member</div><canvas id="chart-mkt-cac" height="280"></canvas></div>
-    <div class="chart-container"><div class="chart-title">Annual Car Costs ($8,680/car)</div><canvas id="chart-car-costs" height="280"></canvas></div>
+  <div class="three-col">
+    <div class="chart-container"><div class="chart-title">Member Growth — End of Year Totals</div><canvas id="chart-member-growth" height="200"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Cars & Members per Car</div><canvas id="chart-cars" height="200"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Marketing Spend vs Cost per New Member</div><canvas id="chart-mkt-cac" height="200"></canvas></div>
   </div>
 
-  <div class="card">
-    <div class="card-label">5-Year Member Build-up Summary</div>
-    <div id="buildup-table"></div>
+  <div class="section-title" style="font-size:15px">P&L Impact</div>
+  <div class="three-col">
+    <div class="chart-container"><div class="chart-title">Revenue Breakdown + Members</div><canvas id="chart-bu-revenue" height="200"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Net Income Before Tax</div><canvas id="chart-bu-netincome" height="200"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Revenue vs Direct (Car) Costs</div><canvas id="chart-bu-revvscost" height="200"></canvas></div>
+  </div>
+
+  <div class="two-col">
+    <div class="chart-container"><div class="chart-title">Annual Car Costs ($8,680/car)</div><canvas id="chart-car-costs" height="200"></canvas></div>
+    <div class="card">
+      <div class="card-label">5-Year Member Build-up Summary</div>
+      <div id="buildup-table"></div>
+    </div>
   </div>
 
   <div class="annotation">Adjust member targets and car fleet to maintain a healthy members-per-car ratio (typically 15-20). Car costs are $8,680 per car per year. Marketing CAC includes a $20 processing cost per new member.</div>
@@ -227,11 +236,10 @@ canvas{width:100%!important}
     </table>
   </div>
 
-  <div class="chart-container"><div class="chart-title">Local Office Costs — 5-Year Breakdown by Category</div><canvas id="chart-cost-stack" height="300"></canvas></div>
-
-  <div class="two-col">
-    <div class="chart-container"><div class="chart-title">Cost per Member (All-In Local Office) by Year</div><canvas id="chart-cost-per-member" height="260"></canvas></div>
-    <div class="chart-container"><div class="chart-title">Customer Acquisition Cost (Marketing + Processing) / New Members</div><canvas id="chart-cac" height="260"></canvas></div>
+  <div class="three-col">
+    <div class="chart-container"><div class="chart-title">Local Office Costs — 5-Year Breakdown by Category</div><canvas id="chart-cost-stack" height="200"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Cost per Member (All-In Local Office) by Year</div><canvas id="chart-cost-per-member" height="200"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Customer Acquisition Cost (Marketing + Processing) / New Members</div><canvas id="chart-cac" height="200"></canvas></div>
   </div>
 
   <div class="card">
@@ -254,11 +262,11 @@ canvas{width:100%!important}
     <div class="kpi"><div class="kpi-label">Members / car</div><div class="kpi-value">11.6</div><div class="kpi-sub">vs 18.0 planned</div></div>
   </div>
   <div class="section-title">Fishbone Decomposition — Margin per Member</div>
-  <div class="two-col">
+  <div class="three-col">
     <div class="card"><div class="card-label">Planned · Monthly margin per member</div><div id="fishbone-plan"></div></div>
     <div class="card"><div class="card-label">Actual · Monthly margin per member</div><div id="fishbone-actual"></div></div>
+    <div class="chart-container"><div class="chart-title">Variance Waterfall — Where the Plan Broke Down</div><canvas id="chart-variance" height="200"></canvas></div>
   </div>
-  <div class="chart-container" style="margin-top:16px"><div class="chart-title">Variance Waterfall — Where the Plan Broke Down</div><canvas id="chart-variance" height="280"></canvas></div>
   <div class="section-title">Hourly vs Daily Use — The Hidden Economics</div>
   <div class="card">
     <div class="card-label">Actual Performance by Use Type</div>
@@ -304,7 +312,6 @@ canvas{width:100%!important}
   </div>
   <div class="controls-grid">
     <div class="control-group"><label>Members per car</label><div class="value-display" id="v-mpc">18</div><input type="range" id="s-mpc" min="6" max="30" step="1" value="18" oninput="updateUnit()"></div>
-    <div class="control-group"><label>Utilization rate</label><div class="value-display" id="v-util">40%</div><input type="range" id="s-util" min="0.10" max="0.70" step="0.01" value="0.40" oninput="updateUnit()"></div>
     <div class="control-group"><label>Monthly car cost ($)</label><div class="value-display" id="v-carcost">$723</div><input type="range" id="s-carcost" min="400" max="1200" step="25" value="723" oninput="updateUnit()"></div>
     <div class="control-group"><label>Revenue per use ($)</label><div class="value-display" id="v-revuse">$30.80</div><input type="range" id="s-revuse" min="10" max="80" step="1" value="30.8" oninput="updateUnit()"></div>
     <div class="control-group"><label>Hours per use</label><div class="value-display" id="v-hpu">4.0</div><input type="range" id="s-hpu" min="1" max="16" step="0.5" value="4" oninput="updateUnit()"></div>
@@ -319,9 +326,10 @@ canvas{width:100%!important}
 <div class="panel" id="panel-sensitivity">
   <div class="section-title">Sensitivity Analysis</div>
   <p style="color:var(--text-dim);margin-bottom:20px;font-size:12px;">Which assumptions matter most? Year 3 net income response to changes in key parameters.</p>
-  <div class="chart-container"><div class="chart-title">Tornado Chart — Impact on Year 3 Net Income</div><canvas id="chart-tornado" height="320"></canvas></div>
-  <div class="section-title">Two-Way Sensitivity — Hourly Rate x Members per Car</div>
-  <div class="chart-container"><div class="chart-title">Year 3 Net Income ($K) — Green = Profitable, Red = Loss</div><div id="heatmap-container"></div></div>
+  <div class="two-col">
+    <div class="chart-container"><div class="chart-title">Tornado Chart — Impact on Year 3 Net Income</div><canvas id="chart-tornado" height="260"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Two-Way: Hourly Rate x Members/Car — Year 3 Net Income ($K)</div><div id="heatmap-container"></div></div>
+  </div>
   <div class="annotation">The tornado chart reveals leverage points. The heatmap shows how two critical variables interact.</div>
 </div>
 
@@ -334,11 +342,10 @@ canvas{width:100%!important}
     <div class="control-group"><label>Customer acquisition cost ($)</label><div class="value-display" id="v-ltv-cac">$43</div><input type="range" id="s-ltv-cac" min="5" max="150" step="5" value="43" oninput="updateLTV()"></div>
   </div>
   <div class="kpi-row" id="ltv-kpis"></div>
-  <div class="two-col">
-    <div class="chart-container"><div class="chart-title">Cohort Survival Curve — % of Members Remaining</div><canvas id="chart-survival" height="260"></canvas></div>
-    <div class="chart-container"><div class="chart-title">Cumulative Margin per Member Over Time</div><canvas id="chart-cumulative" height="260"></canvas></div>
-  </div>
-  <div class="card" style="margin-top:8px"><div class="card-label">Comparison — Plan vs Actual</div>
+  <div class="three-col">
+    <div class="chart-container"><div class="chart-title">Cohort Survival Curve — % of Members Remaining</div><canvas id="chart-survival" height="200"></canvas></div>
+    <div class="chart-container"><div class="chart-title">Cumulative Margin per Member Over Time</div><canvas id="chart-cumulative" height="200"></canvas></div>
+    <div class="card"><div class="card-label">Comparison — Plan vs Actual</div>
     <table class="data-table"><thead><tr><th>Metric</th><th style="text-align:right">Plan</th><th style="text-align:right">Actual</th><th style="text-align:right">Delta</th></tr></thead>
       <tbody>
         <tr><td>Monthly margin / member</td><td class="num">$90.26</td><td class="num">$26.56</td><td class="num negative">-71%</td></tr>
@@ -347,6 +354,7 @@ canvas{width:100%!important}
         <tr><td>CAC (marketing + processing)</td><td class="num">$42.73</td><td class="num">$47.23</td><td class="num negative">+11%</td></tr>
         <tr class="total-row"><td>Net lifecycle margin</td><td class="num positive">$7,178</td><td class="num positive">$1,354</td><td class="num negative">-81%</td></tr>
       </tbody></table></div>
+  </div>
   <div class="annotation">Even with much lower margins and higher attrition than planned, the lifetime value per member remains positive. The CAC now reflects the full cost of acquisition: marketing budget plus background checks per new member.</div>
 </div>
 
@@ -415,13 +423,13 @@ function drawLineChart(cid,labels,datasets,opts={}){
   if(datasets.length>1){let lx=M.left;datasets.forEach(ds=>{ctx.strokeStyle=ds.color;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(lx,13);ctx.lineTo(lx+16,13);ctx.stroke();ctx.fillStyle='#6b7594';ctx.textAlign='left';ctx.font='10px DM Mono';ctx.fillText(ds.label,lx+20,17);lx+=ctx.measureText(ds.label).width+40})}
 }
 
-function drawStackedBarWithLine(cid,labels,datasets,lineData,lineLabel,lineFmtY){
+function drawStackedBarWithLine(cid,labels,datasets,lineData,lineLabel,lineFmtY,barFmtY){
   const{ctx,w,h}=getCtx(cid),M={top:30,right:60,bottom:40,left:65},cw=w-M.left-M.right,ch=h-M.top-M.bottom;
   ctx.clearRect(0,0,w,h);
   const tots=labels.map((_,i)=>datasets.reduce((s,d)=>s+d.data[i],0)),mx=Math.max(...tots)*1.1;
   // Left axis
   ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='right';
-  for(let i=0;i<=5;i++){const v=mx-(mx*i/5),y=M.top+(i/5)*ch;ctx.beginPath();ctx.moveTo(M.left,y);ctx.lineTo(w-M.right,y);ctx.stroke();ctx.fillText('$'+(v/1000).toFixed(0)+'K',M.left-8,y+3)}
+  for(let i=0;i<=5;i++){const v=mx-(mx*i/5),y=M.top+(i/5)*ch;ctx.beginPath();ctx.moveTo(M.left,y);ctx.lineTo(w-M.right,y);ctx.stroke();ctx.fillText(barFmtY?barFmtY(v):'$'+(v/1000).toFixed(0)+'K',M.left-8,y+3)}
   // Bars
   const bw=Math.min(cw/labels.length*0.55,50);
   labels.forEach((l,i)=>{const x=M.left+(i+0.5)*(cw/labels.length)-bw/2;let yB=M.top+ch;
@@ -521,17 +529,27 @@ function updateBuildup(){
 
   // Charts
   var L=['Year 1','Year 2','Year 3','Year 4','Year 5'];
+  var numFmt=function(v){return Math.round(v).toLocaleString()};
   drawStackedBarWithLine('chart-member-growth',L,
     [{label:'New Members',data:nm,color:'#5b8def'},
      {label:'Lost (attrition)',data:endMembers.map(function(e,i){return i===0?0:endMembers[i-1]*att}),color:'#e85a6f'}],
-    endMembers,'End of Year');
+    endMembers,'End of Year',null,numFmt);
   drawStackedBarWithLine('chart-cars',L,
     [{label:'Cars',data:cars,color:'#4ecb8d'}],
-    mpc,'Members/Car');
+    mpc,'Members/Car',null,numFmt);
   drawStackedBarWithLine('chart-mkt-cac',L,
     [{label:'Marketing',data:mkt,color:'#a78bfa'}],
     cac,'CAC ($)');
   drawBarChart('chart-car-costs',L,[{label:'Car Costs',data:carCosts,color:'#e8a44a'}],{showV:true,fmtY:function(v){return '$'+(v/1000).toFixed(0)+'K'}});
+
+  // P&L impact charts — run model with current pricing slider values
+  var af=+document.getElementById('s-annual-fee').value,hr=+document.getElementById('s-hourly-rate').value,mr=+document.getElementById('s-mile-rate').value,apf=+document.getElementById('s-app-fee').value,tpm=+document.getElementById('s-trips').value,patt=+document.getElementById('s-attrition').value;
+  var Y=runModel({annualFee:af,hourlyRate:hr,mileRate:mr,appFee:apf,tripsPerMonth:tpm,attrition:patt});
+  drawStackedBarWithLine('chart-bu-revenue',L,
+    [{label:'Hourly',data:Y.map(function(y){return y.hourlyR}),color:'#5b8def'},{label:'Mileage',data:Y.map(function(y){return y.mileR}),color:'#a78bfa'},{label:'Fees',data:Y.map(function(y){return y.feeR+y.appR}),color:'#e8a44a'},{label:'Interest',data:Y.map(function(y){return y.intR}),color:'#6b7594'}],
+    Y.map(function(y){return y.end}),'Members (end of yr)');
+  drawBarChart('chart-bu-netincome',L,[{label:'Net Income',data:Y.map(function(y){return y.ni}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true});
+  drawLineChart('chart-bu-revvscost',L,[{label:'Total Revenue',data:Y.map(function(y){return y.totalR}),color:'#4ecb8d'},{label:'Direct (Car) Costs',data:Y.map(function(y){return y.carC}),color:'#e85a6f'}]);
 
   // Table
   var html='<table class="data-table"><thead><tr><th>Year</th><th class="num">New Mbrs</th><th class="num">End Mbrs</th><th class="num">Cars</th><th class="num">Mbrs/Car</th><th class="num">Marketing</th><th class="num">CAC</th><th class="num">Car Costs</th></tr></thead><tbody>';
@@ -638,16 +656,16 @@ function updateDailyExplorer(){
 var unitView='use';
 function setUnitView(v,btn){unitView=v;document.querySelectorAll('#panel-uniteconomics .toggle-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active');updateUnit()}
 function updateUnit(){
-  var mpc=+document.getElementById('s-mpc').value,util=+document.getElementById('s-util').value,cc=+document.getElementById('s-carcost').value,ru=+document.getElementById('s-revuse').value,hpu=+document.getElementById('s-hpu').value,upm=+document.getElementById('s-upm').value;
-  document.getElementById('v-mpc').textContent=mpc;document.getElementById('v-util').textContent=(util*100).toFixed(0)+'%';document.getElementById('v-carcost').textContent='$'+cc;document.getElementById('v-revuse').textContent='$'+ru.toFixed(2);document.getElementById('v-hpu').textContent=hpu.toFixed(1);document.getElementById('v-upm').textContent=upm.toFixed(1);
-  var usH=24*30*util,maxMPC=usH/(hpu*upm),cph=cc/usH,cpu=cph*hpu,mpu=ru-cpu;
+  var mpc=+document.getElementById('s-mpc').value,cc=+document.getElementById('s-carcost').value,ru=+document.getElementById('s-revuse').value,hpu=+document.getElementById('s-hpu').value,upm=+document.getElementById('s-upm').value;
+  document.getElementById('v-mpc').textContent=mpc;document.getElementById('v-carcost').textContent='$'+cc;document.getElementById('v-revuse').textContent='$'+ru.toFixed(2);document.getElementById('v-hpu').textContent=hpu.toFixed(1);document.getElementById('v-upm').textContent=upm.toFixed(1);
+  var util=Math.min((mpc*upm*hpu)/(24*30),1),usH=mpc*upm*hpu,cph=cc/usH,cpu=cph*hpu,mpu=ru-cpu;
   var rMM=ru*upm,cMM=cc/mpc,mMM=rMM-cMM,uCar=mpc*upm,rCar=rMM*mpc,mCar=rCar-cc;
-  var gm=ru>0?mpu/ru*100:0,capW=mpc>maxMPC;
+  var gm=ru>0?mpu/ru*100:0;
   // Calculate local overhead from model (Year 3)
   var modelY=runModel({annualFee:75,hourlyRate:5.5,mileRate:0.4,appFee:25,tripsPerMonth:4,attrition:0.15});
   var localOH=modelY[2].localOH;
   if(unitView==='use'){
-    document.getElementById('unit-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Revenue / Use</div><div class="kpi-value">$'+ru.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Cost / Use</div><div class="kpi-value">$'+cpu.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Margin / Use</div><div class="kpi-value '+(mpu>=0?'positive':'negative')+'">$'+mpu.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Gross Margin %</div><div class="kpi-value '+(gm>=0?'positive':'negative')+'">'+gm.toFixed(1)+'%</div></div><div class="kpi"><div class="kpi-label">Cost / Hour</div><div class="kpi-value">$'+cph.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Max Members/Car</div><div class="kpi-value">'+maxMPC.toFixed(1)+(capW?' \u26A0\uFE0F':'')+'</div></div>';
+    document.getElementById('unit-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Revenue / Use</div><div class="kpi-value">$'+ru.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Cost / Use</div><div class="kpi-value">$'+cpu.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Margin / Use</div><div class="kpi-value '+(mpu>=0?'positive':'negative')+'">$'+mpu.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Gross Margin %</div><div class="kpi-value '+(gm>=0?'positive':'negative')+'">'+gm.toFixed(1)+'%</div></div><div class="kpi"><div class="kpi-label">Cost / Hour</div><div class="kpi-value">$'+cph.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Utilization Rate</div><div class="kpi-value'+(util>1?' negative':'')+'">'+(util*100).toFixed(0)+'%</div></div>';
     document.getElementById('unit-view-content').innerHTML='<div class="two-col"><div class="chart-container"><div class="chart-title">Cost per Hour vs Revenue per Hour at Varying Utilization</div><canvas id="chart-u1" height="260"></canvas></div><div class="chart-container"><div class="chart-title">Margin per Use at Varying Hours per Use</div><canvas id="chart-u2" height="260"></canvas></div></div>';
     var uR=[0.15,0.20,0.25,0.30,0.35,0.40,0.50,0.60],rph=ru/hpu;
     drawLineChart('chart-u1',uR.map(function(u){return (u*100).toFixed(0)+'%'}),[{label:'Cost/Hour',data:uR.map(function(u){return cc/(24*30*u)}),color:'#e85a6f'},{label:'Revenue/Hour',data:uR.map(function(){return rph}),color:'#4ecb8d'}],{fmtY:function(v){return '$'+v.toFixed(1)}});
@@ -655,24 +673,22 @@ function updateUnit(){
     drawBarChart('chart-u2',hR.map(function(h){return h+'h'}),[{label:'Margin/Use',data:hR.map(function(h){return ru-cph*h}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
     document.getElementById('unit-annotation').textContent='Per-use view: each use consumes car-hours. Cost per use = (monthly car cost / usable hours) x hours per use. Short uses have low cost and healthy margin. Long daily uses (16h) can exceed revenue.';
   } else if(unitView==='member'){
-    document.getElementById('unit-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Revenue / Mbr / Mo</div><div class="kpi-value">$'+rMM.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Car Cost / Mbr / Mo</div><div class="kpi-value">$'+cMM.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Margin / Mbr / Mo</div><div class="kpi-value '+(mMM>=0?'positive':'negative')+'">$'+mMM.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Gross Margin %</div><div class="kpi-value '+(gm>=0?'positive':'negative')+'">'+gm.toFixed(1)+'%</div></div><div class="kpi"><div class="kpi-label">Uses / Mbr / Mo</div><div class="kpi-value">'+upm.toFixed(1)+'</div></div><div class="kpi"><div class="kpi-label">Max Members/Car</div><div class="kpi-value">'+maxMPC.toFixed(1)+(capW?' \u26A0\uFE0F':'')+'</div></div>';
-    document.getElementById('unit-view-content').innerHTML='<div class="two-col"><div class="chart-container"><div class="chart-title">Monthly Margin per Member at Varying Members per Car</div><canvas id="chart-u1" height="260"></canvas></div><div class="chart-container"><div class="chart-title">Revenue vs Car Cost per Member at Varying Uses/Mo</div><canvas id="chart-u2" height="260"></canvas></div></div>';
-    var mR=[8,10,12,14,16,18,20,24];
-    drawBarChart('chart-u1',mR.map(function(n){return ''+n}),[{label:'Margin/Mbr/Mo',data:mR.map(function(n){return rMM-cc/n}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
+    document.getElementById('unit-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Revenue / Mbr / Mo</div><div class="kpi-value">$'+rMM.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Car Cost / Mbr / Mo</div><div class="kpi-value">$'+cMM.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Margin / Mbr / Mo</div><div class="kpi-value '+(mMM>=0?'positive':'negative')+'">$'+mMM.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Gross Margin %</div><div class="kpi-value '+(gm>=0?'positive':'negative')+'">'+gm.toFixed(1)+'%</div></div><div class="kpi"><div class="kpi-label">Uses / Mbr / Mo</div><div class="kpi-value">'+upm.toFixed(1)+'</div></div><div class="kpi"><div class="kpi-label">Utilization Rate</div><div class="kpi-value'+(util>1?' negative':'')+'">'+(util*100).toFixed(0)+'%</div></div>';
+    document.getElementById('unit-view-content').innerHTML='<div class="two-col"><div class="chart-container"><div class="chart-title">Monthly Margin per Member at Varying Members per Car (utilization %)</div><canvas id="chart-u1" height="260"></canvas></div><div class="chart-container"><div class="chart-title">Revenue vs Car Cost per Member at Varying Uses/Mo (utilization %)</div><canvas id="chart-u2" height="260"></canvas></div></div>';
+    var mR=[6,8,10,12,14,16,18,20,24,28];
+    drawBarChart('chart-u1',mR.map(function(n){var u=Math.min(n*upm*hpu/(24*30),1);return n+' ('+(u*100).toFixed(0)+'%)'}),[{label:'Margin/Mbr/Mo',data:mR.map(function(n){return rMM-cc/n}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
     var uR2=[1,2,3,4,5,6,7,8];
-    drawLineChart('chart-u2',uR2.map(function(u){return ''+u}),[{label:'Revenue/Mbr',data:uR2.map(function(u){return ru*u}),color:'#4ecb8d'},{label:'Car Cost/Mbr',data:uR2.map(function(){return cMM}),color:'#e85a6f'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
+    drawLineChart('chart-u2',uR2.map(function(u){var ut=Math.min(mpc*u*hpu/(24*30),1);return u+' ('+(ut*100).toFixed(0)+'%)'}),[{label:'Revenue/Mbr',data:uR2.map(function(u){return ru*u}),color:'#4ecb8d'},{label:'Car Cost/Mbr',data:uR2.map(function(){return cMM}),color:'#e85a6f'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
     document.getElementById('unit-annotation').textContent='Per-member view: car cost is shared across members. Revenue scales with usage frequency, but car cost per member is fixed by members-per-car ratio. More members lowers allocation but requires utilization headroom.';
   } else {
-    document.getElementById('unit-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Revenue / Car / Mo</div><div class="kpi-value">$'+rCar.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Car Cost / Mo</div><div class="kpi-value">$'+cc+'</div></div><div class="kpi"><div class="kpi-label">Margin / Car / Mo</div><div class="kpi-value '+(mCar>=0?'positive':'negative')+'">$'+mCar.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Gross Margin %</div><div class="kpi-value '+(gm>=0?'positive':'negative')+'">'+gm.toFixed(1)+'%</div></div><div class="kpi"><div class="kpi-label">Uses / Car / Mo</div><div class="kpi-value">'+uCar.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Usable Hrs / Car / Mo</div><div class="kpi-value">'+usH.toFixed(0)+'</div></div>';
-    document.getElementById('unit-view-content').innerHTML='<div class="two-col"><div class="chart-container"><div class="chart-title">Monthly Margin per Car at Varying Members per Car</div><canvas id="chart-u1" height="260"></canvas></div><div class="chart-container"><div class="chart-title">Revenue per Car vs Fixed Car Cost at Varying Utilization</div><canvas id="chart-u2" height="260"></canvas></div></div><div class="card" style="margin-top:8px"><div class="card-label">Overhead Coverage - How Many Cars to Break Even? (Year 3)</div><table class="data-table"><thead><tr><th>Cost Layer</th><th style="text-align:right">Annual Cost</th><th style="text-align:right">Cars Needed</th></tr></thead><tbody><tr class="total-row"><td>Local office overhead</td><td class="num">$'+Math.round(localOH).toLocaleString()+'</td><td class="num">'+(mCar>0?(localOH/(mCar*12)).toFixed(1):'inf')+'</td></tr></tbody></table></div>';
-    var mR2=[8,10,12,14,16,18,20,24];
-    drawBarChart('chart-u1',mR2.map(function(n){return n+' mbrs'}),[{label:'Margin/Car/Mo',data:mR2.map(function(n){return ru*upm*n-cc}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
-    var uR3=[0.15,0.20,0.25,0.30,0.35,0.40,0.50,0.60];
-    drawLineChart('chart-u2',uR3.map(function(u){return (u*100).toFixed(0)+'%'}),[{label:'Revenue/Car',data:uR3.map(function(u){var mm=24*30*u/(hpu*upm);return ru*upm*Math.min(mpc,mm)}),color:'#4ecb8d'},{label:'Car Cost',data:uR3.map(function(){return cc}),color:'#e85a6f'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
+    document.getElementById('unit-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Revenue / Car / Mo</div><div class="kpi-value">$'+rCar.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Car Cost / Mo</div><div class="kpi-value">$'+cc+'</div></div><div class="kpi"><div class="kpi-label">Margin / Car / Mo</div><div class="kpi-value '+(mCar>=0?'positive':'negative')+'">$'+mCar.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Gross Margin %</div><div class="kpi-value '+(gm>=0?'positive':'negative')+'">'+gm.toFixed(1)+'%</div></div><div class="kpi"><div class="kpi-label">Utilization Rate</div><div class="kpi-value'+(util>1?' negative':'')+'">'+(util*100).toFixed(0)+'%</div></div>';
+    document.getElementById('unit-view-content').innerHTML='<div class="two-col"><div class="chart-container"><div class="chart-title">Revenue & Cost per Car at Varying Members per Car (utilization %)</div><canvas id="chart-u1" height="200"></canvas></div><div class="card"><div class="card-label">Overhead Coverage - How Many Cars to Break Even? (Year 3)</div><table class="data-table"><thead><tr><th>Cost Layer</th><th style="text-align:right">Annual Cost</th><th style="text-align:right">Cars Needed</th></tr></thead><tbody><tr class="total-row"><td>Local office overhead</td><td class="num">$'+Math.round(localOH).toLocaleString()+'</td><td class="num">'+(mCar>0?(localOH/(mCar*12)).toFixed(1):'inf')+'</td></tr></tbody></table></div></div>';
+    var mR2=[6,8,10,12,14,16,18,20,24,28];
+    drawLineChart('chart-u1',mR2.map(function(n){var u=Math.min(n*upm*hpu/(24*30),1);return n+' ('+(u*100).toFixed(0)+'%)'}),[{label:'Revenue/Car',data:mR2.map(function(n){return ru*upm*n}),color:'#4ecb8d'},{label:'Car Cost',data:mR2.map(function(){return cc}),color:'#e85a6f'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
     document.getElementById('unit-annotation').textContent='Per-car view: the fundamental asset unit. Margin per car must cover local office overhead. The table shows how many margin-positive cars are needed for overall breakeven.';
   }
 }
-function resetUnit(){['s-mpc','s-util','s-carcost','s-revuse','s-hpu','s-upm'].forEach(function(id,i){document.getElementById(id).value=[18,0.40,723,30.8,4,4][i]});updateUnit()}
+function resetUnit(){['s-mpc','s-carcost','s-revuse','s-hpu','s-upm'].forEach(function(id,i){document.getElementById(id).value=[18,723,30.8,4,4][i]});updateUnit()}
 
 // === SENSITIVITY ===
 function initSensitivity(){
