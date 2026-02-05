@@ -122,7 +122,7 @@ canvas{width:100%!important}
       <li><strong>Cost Structure</strong> — Visualize local office costs across billing, processing, marketing, and fixed overhead</li>
       <li><strong>Plan vs Actual</strong> — Compare planned assumptions against actual operating data with variance analysis</li>
       <li><strong>Unit Economics</strong> — View gross margin from three perspectives: per use, per member, or per car</li>
-      <li><strong>Sensitivity Analysis</strong> — Identify which assumptions matter most via tornado charts and heatmaps</li>
+      <li><strong>Overview</strong> — 5-year P&L summary with gross margin and overhead as % of revenue, plus sensitivity analysis via tornado charts and heatmaps</li>
       <li><strong>Lifetime Value</strong> — Model customer LTV with adjustable margin, attrition, and acquisition cost</li>
     </ul>
     <h2>Usage</h2>
@@ -134,7 +134,7 @@ canvas{width:100%!important}
   <button class="tab" onclick="showPanel('buildup',this)">Member Build-up</button>
   <button class="tab" onclick="showPanel('costs',this)">Cost Structure</button>
   <button class="tab" onclick="showPanel('uniteconomics',this)">Unit Economics</button>
-  <button class="tab" onclick="showPanel('sensitivity',this)">Sensitivity</button>
+  <button class="tab" onclick="showPanel('sensitivity',this)">Overview</button>
   <button class="tab" onclick="showPanel('planvactual',this)">Plan vs Actual</button>
   <button class="tab" onclick="showPanel('lifetime',this)">Lifetime Value</button>
 </div>
@@ -322,8 +322,14 @@ canvas{width:100%!important}
   <div class="annotation" id="unit-annotation"></div>
 </div>
 
-<!-- PANEL 5: SENSITIVITY -->
+<!-- PANEL 5: OVERVIEW (formerly SENSITIVITY) -->
 <div class="panel" id="panel-sensitivity">
+  <div class="section-title">5-Year P&L Summary</div>
+  <div class="card">
+    <div class="card-label">Profit & Loss Statement — 5-Year Projection</div>
+    <div id="overview-pnl-table"></div>
+  </div>
+
   <div class="section-title">Sensitivity Analysis</div>
   <p style="color:var(--text-dim);margin-bottom:20px;font-size:12px;">Which assumptions matter most? Year 3 net income response to changes in key parameters.</p>
   <div class="two-col">
@@ -481,7 +487,7 @@ function updatePricing(){
   drawStackedBarWithLine('chart-revenue',L,
     [{label:'Hourly',data:Y.map(y=>y.hourlyR),color:'#5b8def'},{label:'Mileage',data:Y.map(y=>y.mileR),color:'#a78bfa'},{label:'Fees',data:Y.map(y=>y.feeR+y.appR),color:'#e8a44a'},{label:'Interest',data:Y.map(y=>y.intR),color:'#6b7594'}],
     Y.map(y=>y.end),'Members (end of yr)');
-  drawBarChart('chart-netincome',L,[{label:'Net Income',data:Y.map(y=>y.ni),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true});
+  drawBarChart('chart-netincome',L,[{label:'Net Income',data:Y.map(y=>y.ni),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+(v/1000).toFixed(0)+'K'}});
   drawLineChart('chart-revvscost',L,[{label:'Total Revenue',data:Y.map(y=>y.totalR),color:'#4ecb8d'},{label:'Direct (Car) Costs',data:Y.map(y=>y.carC),color:'#e85a6f'}]);
 }
 function resetPricing(){['s-annual-fee','s-hourly-rate','s-mile-rate','s-app-fee','s-trips','s-attrition'].forEach(function(id,i){document.getElementById(id).value=[75,5.5,0.40,25,4,0.15][i]});updatePricing()}
@@ -548,7 +554,7 @@ function updateBuildup(){
   drawStackedBarWithLine('chart-bu-revenue',L,
     [{label:'Hourly',data:Y.map(function(y){return y.hourlyR}),color:'#5b8def'},{label:'Mileage',data:Y.map(function(y){return y.mileR}),color:'#a78bfa'},{label:'Fees',data:Y.map(function(y){return y.feeR+y.appR}),color:'#e8a44a'},{label:'Interest',data:Y.map(function(y){return y.intR}),color:'#6b7594'}],
     Y.map(function(y){return y.end}),'Members (end of yr)');
-  drawBarChart('chart-bu-netincome',L,[{label:'Net Income',data:Y.map(function(y){return y.ni}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true});
+  drawBarChart('chart-bu-netincome',L,[{label:'Net Income',data:Y.map(function(y){return y.ni}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+(v/1000).toFixed(0)+'K'}});
   drawLineChart('chart-bu-revvscost',L,[{label:'Total Revenue',data:Y.map(function(y){return y.totalR}),color:'#4ecb8d'},{label:'Direct (Car) Costs',data:Y.map(function(y){return y.carC}),color:'#e85a6f'}]);
 
   // Table
@@ -690,8 +696,36 @@ function updateUnit(){
 }
 function resetUnit(){['s-mpc','s-carcost','s-revuse','s-hpu','s-upm'].forEach(function(id,i){document.getElementById(id).value=[18,723,30.8,4,4][i]});updateUnit()}
 
-// === SENSITIVITY ===
+// === SENSITIVITY / OVERVIEW ===
 function initSensitivity(){
+  // Get current pricing values from sliders
+  var af=+document.getElementById('s-annual-fee').value,hr=+document.getElementById('s-hourly-rate').value,mr=+document.getElementById('s-mile-rate').value,apf=+document.getElementById('s-app-fee').value,tpm=+document.getElementById('s-trips').value,att=+document.getElementById('s-attrition').value;
+  var Y=runModel({annualFee:af,hourlyRate:hr,mileRate:mr,appFee:apf,tripsPerMonth:tpm,attrition:att});
+
+  // Build P&L table
+  var fmt=function(v){return v>=0?'$'+(v/1000).toFixed(0)+'K':'-$'+(Math.abs(v)/1000).toFixed(0)+'K'};
+  var pct=function(v,r){return r?Math.round(v/r*100)+'%':'—'};
+  var pnl='<table class="data-table"><thead><tr><th></th><th class="num">Year 1</th><th class="num">Year 2</th><th class="num">Year 3</th><th class="num">Year 4</th><th class="num">Year 5</th></tr></thead><tbody>';
+  pnl+='<tr><td>Average Members</td>'+Y.map(function(y){return '<td class="num">'+Math.round(y.avg)+'</td>'}).join('')+'</tr>';
+  pnl+='<tr><td>Average Cars</td>'+Y.map(function(y){return '<td class="num">'+y.aC.toFixed(0)+'</td>'}).join('')+'</tr>';
+  pnl+='<tr><td colspan="6" style="padding-top:12px;color:var(--text-dim);font-size:10px;text-transform:uppercase;letter-spacing:1px">Revenue</td></tr>';
+  pnl+='<tr><td class="indent">Application Fees</td>'+Y.map(function(y){return '<td class="num">'+fmt(y.appR)+'</td>'}).join('')+'</tr>';
+  pnl+='<tr><td class="indent">Membership Fees</td>'+Y.map(function(y){return '<td class="num">'+fmt(y.feeR)+'</td>'}).join('')+'</tr>';
+  pnl+='<tr><td class="indent">Car Revenue</td>'+Y.map(function(y){return '<td class="num">'+fmt(y.hourlyR+y.mileR)+'</td>'}).join('')+'</tr>';
+  pnl+='<tr><td class="indent">Interest Income</td>'+Y.map(function(y){return '<td class="num">'+fmt(y.intR)+'</td>'}).join('')+'</tr>';
+  pnl+='<tr style="font-weight:500"><td>Total Revenue</td>'+Y.map(function(y){return '<td class="num">'+fmt(y.totalR)+'</td>'}).join('')+'</tr>';
+  pnl+='<tr><td colspan="6" style="padding-top:12px;color:var(--text-dim);font-size:10px;text-transform:uppercase;letter-spacing:1px">Direct Costs</td></tr>';
+  pnl+='<tr><td class="indent">Car Costs</td>'+Y.map(function(y){return '<td class="num">'+fmt(y.carC)+'</td>'}).join('')+'</tr>';
+  pnl+='<tr style="font-weight:500;border-top:1px solid var(--border)"><td>Gross Margin</td>'+Y.map(function(y){var gm=y.totalR-y.carC;return '<td class="num'+(gm>=0?' positive':' negative')+'">'+fmt(gm)+' <span style="color:var(--text-dim);font-size:10px">'+pct(gm,y.totalR)+'</span></td>'}).join('')+'</tr>';
+  pnl+='<tr><td colspan="6" style="padding-top:12px;color:var(--text-dim);font-size:10px;text-transform:uppercase;letter-spacing:1px">Overhead Costs</td></tr>';
+  pnl+='<tr><td class="indent">G&A</td>'+Y.map(function(y){return '<td class="num">'+fmt(y.billing+y.bgcheck+y.offF)+'</td>'}).join('')+'</tr>';
+  pnl+='<tr><td class="indent">Marketing</td>'+Y.map(function(y){return '<td class="num">'+fmt(y.mkt)+'</td>'}).join('')+'</tr>';
+  pnl+='<tr style="font-weight:500"><td>Total Overhead</td>'+Y.map(function(y){return '<td class="num">'+fmt(y.localOH)+' <span style="color:var(--text-dim);font-size:10px">'+pct(y.localOH,y.totalR)+'</span></td>'}).join('')+'</tr>';
+  pnl+='<tr class="total-row"><td>Net Income Before Tax</td>'+Y.map(function(y){return '<td class="num'+(y.ni>=0?' positive':' negative')+'">'+fmt(y.ni)+' <span style="color:var(--text-dim);font-size:10px">'+pct(y.ni,y.totalR)+'</span></td>'}).join('')+'</tr>';
+  pnl+='</tbody></table>';
+  document.getElementById('overview-pnl-table').innerHTML=pnl;
+
+  // Sensitivity analysis (using base case for tornado)
   var base=runModel({annualFee:75,hourlyRate:5.5,mileRate:0.4,appFee:25,tripsPerMonth:4,attrition:0.15}),bY3=base[2].ni;
   var ps=[{n:'Hourly Rate',k:'hourlyRate',l:3,h:8},{n:'Trips/Mo',k:'tripsPerMonth',l:2,h:6},{n:'Annual Fee',k:'annualFee',l:0,h:200},{n:'Attrition',k:'attrition',l:0.25,h:0.05},{n:'Mile Rate',k:'mileRate',l:0.20,h:0.60},{n:'App Fee',k:'appFee',l:0,h:50}];
   var ds=ps.map(function(p){var bp={annualFee:75,hourlyRate:5.5,mileRate:0.4,appFee:25,tripsPerMonth:4,attrition:0.15};bp[p.k]=p.l;var lR=runModel(bp)[2].ni-bY3;bp[p.k]=p.h;var hR=runModel(bp)[2].ni-bY3;return{n:p.n,lo:Math.min(lR,hR),hi:Math.max(lR,hR)}});
@@ -708,7 +742,7 @@ function initSensitivity(){
   mps.forEach(function(mp){html+='<div class="heatmap-header" style="text-align:right">'+mp+'</div>';hR.forEach(function(rate){
     var tr=882*75+882*12*4*22*0.40+882*12*4*4*rate+180*25+882*300*0.04,ni=(tr-49*TOTAL_VAR_PER_CAR-233956)/1000;
     var int=Math.min(Math.abs(ni)/800,1),bg,fg;
-    if(ni>=0){bg='rgba(78,203,141,'+(0.1+int*0.5)+')';fg=int>0.3?'#0c0f14':'#4ecb8d'}else{bg='rgba(232,90,111,'+(0.1+int*0.5)+')';fg=int>0.3?'#0c0f14':'#e85a6f'}
+    if(ni>=0){bg='rgba(78,203,141,'+(0.1+int*0.5)+')';fg=int>0.6?'#0c0f14':'#d4dae8'}else{bg='rgba(232,90,111,'+(0.1+int*0.5)+')';fg=int>0.6?'#0c0f14':'#d4dae8'}
     html+='<div class="heatmap-cell" style="background:'+bg+';color:'+fg+'">'+ni.toFixed(0)+'</div>'})});
   html+='</div>';document.getElementById('heatmap-container').innerHTML=html;
 }
