@@ -6,40 +6,40 @@
 <title>Car-Share Venture: Financial Model Explorer</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0c0f14;--surface:#141821;--surface2:#1a1f2b;--border:#252b3a;--text:#d4dae8;--text-dim:#6b7594;--text-bright:#f0f3fa;--accent:#e8a44a;--accent-dim:rgba(232,164,74,0.15);--positive:#4ecb8d;--negative:#e85a6f;--positive-dim:rgba(78,203,141,0.12);--negative-dim:rgba(232,90,111,0.12);--blue:#5b8def;--blue-dim:rgba(91,141,239,0.12);--purple:#a78bfa}
+:root{--bg:#f5f5f7;--surface:#ffffff;--surface2:#eeeef0;--border:#d8d8dc;--text:#3a3a4a;--text-dim:#8a8a9a;--text-bright:#1a1a2a;--accent:#c8842a;--accent-dim:rgba(200,132,42,0.12);--positive:#2a9d5c;--negative:#d44a5a;--positive-dim:rgba(42,157,92,0.10);--negative-dim:rgba(212,74,90,0.10);--blue:#4a7ad4;--blue-dim:rgba(74,122,212,0.10);--purple:#7c5ec8}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--text);font-size:13px;line-height:1.6;min-height:100vh}
+body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 .header{padding:32px 40px 24px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap}
 .header h1{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--text-bright);letter-spacing:-0.5px}
-.header .subtitle{font-size:12px;color:var(--text-dim);padding-bottom:3px}
+.header .subtitle{font-size:13px;color:var(--text-dim);padding-bottom:3px}
 .tabs{display:flex;gap:0;padding:0 40px;border-bottom:1px solid var(--border);overflow-x:auto}
-.tab{padding:14px 22px;font-family:'DM Mono',monospace;font-size:12px;font-weight:400;color:var(--text-dim);background:none;border:none;cursor:pointer;position:relative;white-space:nowrap;transition:color 0.2s;letter-spacing:0.5px;text-transform:uppercase}
+.tab{padding:14px 22px;font-family:'DM Mono',monospace;font-size:13px;font-weight:400;color:var(--text-dim);background:none;border:none;cursor:pointer;position:relative;white-space:nowrap;transition:color 0.2s;letter-spacing:0.5px;text-transform:uppercase}
 .tab:hover{color:var(--text)}.tab.active{color:var(--accent)}.tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--accent)}
 .panel{display:none;padding:28px 40px 60px}.panel.active{display:block}
 .section-title{font-family:'Fraunces',serif;font-size:18px;font-weight:500;color:var(--text-bright);margin:28px 0 16px;letter-spacing:-0.3px}.section-title:first-child{margin-top:0}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px 24px;margin-bottom:16px}
-.card-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-dim);margin-bottom:12px}
+.card-label{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-dim);margin-bottom:12px}
 .controls-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:24px}
 .control-group{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 20px}
-.control-group label{display:block;font-size:11px;color:var(--text-dim);margin-bottom:8px;letter-spacing:0.3px}
+.control-group label{display:block;font-size:13px;color:var(--text-dim);margin-bottom:8px;letter-spacing:0.3px}
 .control-group .value-display{font-family:'Fraunces',serif;font-size:22px;font-weight:500;color:var(--text-bright);margin-bottom:8px}
 input[type="range"]{-webkit-appearance:none;width:100%;height:4px;background:var(--border);border-radius:2px;outline:none}
-input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--accent);border-radius:50%;cursor:pointer;box-shadow:0 0 8px rgba(232,164,74,0.3)}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--accent);border-radius:50%;cursor:pointer;box-shadow:0 0 8px rgba(200,132,42,0.3)}
 .toggle-row{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-.toggle-btn{padding:7px 16px;font-family:'DM Mono',monospace;font-size:11px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);border-radius:6px;cursor:pointer;transition:all 0.2s}
+.toggle-btn{padding:7px 16px;font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);border-radius:6px;cursor:pointer;transition:all 0.2s}
 .toggle-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
 .chart-container{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px}
-.chart-container .chart-title{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:16px}
+.chart-container .chart-title{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:16px}
 canvas{width:100%!important}
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:24px}
 .kpi{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 18px}
-.kpi .kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:6px}
+.kpi .kpi-label{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:6px}
 .kpi .kpi-value{font-family:'Fraunces',serif;font-size:24px;font-weight:500;color:var(--text-bright)}
 .kpi .kpi-value.positive{color:var(--positive)}.kpi .kpi-value.negative{color:var(--negative)}
-.kpi .kpi-sub{font-size:10px;color:var(--text-dim);margin-top:2px}
-.data-table{width:100%;border-collapse:collapse;font-size:12px}
-.data-table th{text-align:left;padding:8px 12px;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:400}
+.kpi .kpi-sub{font-size:12px;color:var(--text-dim);margin-top:2px}
+.data-table{width:100%;border-collapse:collapse;font-size:14px}
+.data-table th{text-align:left;padding:8px 12px;font-size:12px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:400}
 .data-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text)}
 .data-table tr:last-child td{border-bottom:none}.data-table td.num{text-align:right;font-variant-numeric:tabular-nums}
 .data-table td.positive{color:var(--positive)}.data-table td.negative{color:var(--negative)}
@@ -84,22 +84,22 @@ canvas{width:100%!important}
   .equiv-badge{font-size:9px;margin-top:8px}
   .connector-line{font-size:11px;overflow-x:auto}
 }
-.annotation{font-size:11px;color:var(--text-dim);font-style:italic;margin-top:8px;line-height:1.5;padding:10px 14px;border-left:2px solid var(--border)}
+.annotation{font-size:13px;color:var(--text-dim);font-style:italic;margin-top:8px;line-height:1.5;padding:10px 14px;border-left:2px solid var(--border)}
 .heatmap-grid{display:grid;gap:2px;margin-top:12px}
-.heatmap-cell{padding:8px 4px;text-align:center;font-size:10px;border-radius:3px;font-variant-numeric:tabular-nums}
-.heatmap-header{font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-dim);padding:4px;text-align:center}
-.reset-btn{padding:7px 16px;font-family:'DM Mono',monospace;font-size:11px;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:6px;cursor:pointer;transition:all 0.2s;margin-left:auto}
+.heatmap-cell{padding:8px 4px;text-align:center;font-size:12px;border-radius:3px;font-variant-numeric:tabular-nums}
+.heatmap-header{font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-dim);padding:4px;text-align:center}
+.reset-btn{padding:7px 16px;font-family:'DM Mono',monospace;font-size:13px;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:6px;cursor:pointer;transition:all 0.2s;margin-left:auto}
 .reset-btn:hover{border-color:var(--text-dim);color:var(--text)}
 .flex-between{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-.connector-line{font-size:12px;line-height:2;color:var(--text);font-family:'DM Mono',monospace}
+.connector-line{font-size:14px;line-height:2;color:var(--text);font-family:'DM Mono',monospace}
 .connector-line .val{color:var(--text-bright);font-weight:500}.connector-line .neg{color:var(--negative)}.connector-line .pos{color:var(--positive)}.connector-line .dim{color:var(--text-dim)}
-.equiv-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;letter-spacing:0.5px;text-transform:uppercase;background:var(--accent-dim);color:var(--accent)}
+.equiv-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:12px;letter-spacing:0.5px;text-transform:uppercase;background:var(--accent-dim);color:var(--accent)}
 .indent{padding-left:24px;color:var(--text-dim)}
-.about-btn{padding:7px 16px;font-family:'DM Mono',monospace;font-size:11px;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:6px;cursor:pointer;transition:all 0.2s;margin-left:auto}
+.about-btn{padding:7px 16px;font-family:'DM Mono',monospace;font-size:13px;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:6px;cursor:pointer;transition:all 0.2s;margin-left:auto}
 .about-btn:hover{border-color:var(--text-dim);color:var(--text)}
 .about-panel{max-height:0;overflow:hidden;transition:max-height 0.3s ease-out;background:var(--surface);border-bottom:1px solid var(--border)}
 .about-panel.open{max-height:600px;overflow-y:auto}
-.about-content{padding:24px 40px;font-size:13px;line-height:1.8}
+.about-content{padding:24px 40px;font-size:15px;line-height:1.8}
 .about-content h2{font-family:'Fraunces',serif;font-size:16px;font-weight:500;color:var(--text-bright);margin:20px 0 10px}
 .about-content h2:first-child{margin-top:0}
 .about-content p{color:var(--text);margin-bottom:12px}
@@ -405,28 +405,28 @@ function drawBarChart(cid,labels,datasets,opts={}){
   ctx.clearRect(0,0,w,h);let all=[];datasets.forEach(d=>all.push(...d.data));
   let mx=Math.max(...all,0)*1.15,mn=Math.min(...all,0)*1.15;if(mn>=0)mn=0;if(mx<=0)mx=Math.max(...all.map(Math.abs))*0.1;
   const rng=mx-mn||1,zY=M.top+(mx/rng)*ch;
-  ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='right';
+  ctx.strokeStyle='#d8d8dc';ctx.lineWidth=0.5;ctx.font='13px DM Mono';ctx.fillStyle='#8a8a9a';ctx.textAlign='right';
   for(let i=0;i<=5;i++){const v=mx-(rng*i/5),y=M.top+(i/5)*ch;ctx.beginPath();ctx.moveTo(M.left,y);ctx.lineTo(w-M.right,y);ctx.stroke();ctx.fillText(opts.fmtY?opts.fmtY(v):(Math.abs(v)>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v.toFixed(0)),M.left-8,y+3)}
-  if(mn<0){ctx.strokeStyle='#6b7594';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(M.left,zY);ctx.lineTo(w-M.right,zY);ctx.stroke()}
+  if(mn<0){ctx.strokeStyle='#8a8a9a';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(M.left,zY);ctx.lineTo(w-M.right,zY);ctx.stroke()}
   const gw=cw/labels.length,bw=Math.min(gw*0.6/datasets.length,36),tw=bw*datasets.length;
   labels.forEach((l,i)=>{const gx=M.left+i*gw+gw/2;
     datasets.forEach((ds,j)=>{const v=ds.data[i],bH=Math.abs(v/rng*ch),x=gx-tw/2+j*bw,y=v>=0?zY-bH:zY;
       ctx.fillStyle=typeof ds.color==='function'?ds.color(v):ds.color;ctx.globalAlpha=0.85;ctx.fillRect(x,y,bw,bH);ctx.globalAlpha=1;
-      if(opts.showV){ctx.fillStyle='#d4dae8';ctx.textAlign='center';ctx.font='10px DM Mono';ctx.fillText(opts.fmtY?opts.fmtY(v):'$'+v.toFixed(0),x+bw/2,v>=0?y-6:y+bH+14)}});
-    ctx.fillStyle='#6b7594';ctx.textAlign='center';ctx.font='11px DM Mono';ctx.fillText(l,gx,h-M.bottom+20)});
-  if(datasets.length>1||opts.legend){let lx=M.left;datasets.forEach(ds=>{ctx.fillStyle=typeof ds.color==='function'?ds.color(1):ds.color;ctx.fillRect(lx,8,10,10);ctx.fillStyle='#6b7594';ctx.textAlign='left';ctx.font='10px DM Mono';ctx.fillText(ds.label,lx+14,17);lx+=ctx.measureText(ds.label).width+30})}
+      if(opts.showV){ctx.fillStyle='#3a3a4a';ctx.textAlign='center';ctx.font='13px DM Mono';ctx.fillText(opts.fmtY?opts.fmtY(v):'$'+v.toFixed(0),x+bw/2,v>=0?y-6:y+bH+14)}});
+    ctx.fillStyle='#8a8a9a';ctx.textAlign='center';ctx.font='13px DM Mono';ctx.fillText(l,gx,h-M.bottom+20)});
+  if(datasets.length>1||opts.legend){let lx=M.left;datasets.forEach(ds=>{ctx.fillStyle=typeof ds.color==='function'?ds.color(1):ds.color;ctx.fillRect(lx,8,10,10);ctx.fillStyle='#8a8a9a';ctx.textAlign='left';ctx.font='13px DM Mono';ctx.fillText(ds.label,lx+14,17);lx+=ctx.measureText(ds.label).width+30})}
 }
 
 function drawLineChart(cid,labels,datasets,opts={}){
   const{ctx,w,h}=getCtx(cid),M={top:30,right:20,bottom:40,left:65},cw=w-M.left-M.right,ch=h-M.top-M.bottom;
   ctx.clearRect(0,0,w,h);let all=[];datasets.forEach(d=>all.push(...d.data));
   let mx=Math.max(...all)*1.12,mn=Math.min(...all,0);if(mn>0)mn=0;const rng=mx-mn||1;
-  ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='right';
+  ctx.strokeStyle='#d8d8dc';ctx.lineWidth=0.5;ctx.font='13px DM Mono';ctx.fillStyle='#8a8a9a';ctx.textAlign='right';
   for(let i=0;i<=5;i++){const v=mx-(rng*i/5),y=M.top+(i/5)*ch;ctx.beginPath();ctx.moveTo(M.left,y);ctx.lineTo(w-M.right,y);ctx.stroke();ctx.fillText(opts.fmtY?opts.fmtY(v):'$'+v.toFixed(0),M.left-8,y+3)}
   datasets.forEach(ds=>{ctx.strokeStyle=ds.color;ctx.lineWidth=2.5;ctx.beginPath();ds.data.forEach((v,i)=>{const x=M.left+(i/(labels.length-1))*cw,y=M.top+((mx-v)/rng)*ch;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.stroke();
-    ds.data.forEach((v,i)=>{const x=M.left+(i/(labels.length-1))*cw,y=M.top+((mx-v)/rng)*ch;ctx.fillStyle=ds.color;ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0c0f14';ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill()})});
-  labels.forEach((l,i)=>{const x=M.left+(i/(labels.length-1))*cw;ctx.fillStyle='#6b7594';ctx.textAlign='center';ctx.font='11px DM Mono';ctx.fillText(l,x,h-M.bottom+20)});
-  if(datasets.length>1){let lx=M.left;datasets.forEach(ds=>{ctx.strokeStyle=ds.color;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(lx,13);ctx.lineTo(lx+16,13);ctx.stroke();ctx.fillStyle='#6b7594';ctx.textAlign='left';ctx.font='10px DM Mono';ctx.fillText(ds.label,lx+20,17);lx+=ctx.measureText(ds.label).width+40})}
+    ds.data.forEach((v,i)=>{const x=M.left+(i/(labels.length-1))*cw,y=M.top+((mx-v)/rng)*ch;ctx.fillStyle=ds.color;ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffffff';ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill()})});
+  labels.forEach((l,i)=>{const x=M.left+(i/(labels.length-1))*cw;ctx.fillStyle='#8a8a9a';ctx.textAlign='center';ctx.font='13px DM Mono';ctx.fillText(l,x,h-M.bottom+20)});
+  if(datasets.length>1){let lx=M.left;datasets.forEach(ds=>{ctx.strokeStyle=ds.color;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(lx,13);ctx.lineTo(lx+16,13);ctx.stroke();ctx.fillStyle='#8a8a9a';ctx.textAlign='left';ctx.font='13px DM Mono';ctx.fillText(ds.label,lx+20,17);lx+=ctx.measureText(ds.label).width+40})}
 }
 
 function drawStackedBarWithLine(cid,labels,datasets,lineData,lineLabel,lineFmtY,barFmtY){
@@ -434,28 +434,28 @@ function drawStackedBarWithLine(cid,labels,datasets,lineData,lineLabel,lineFmtY,
   ctx.clearRect(0,0,w,h);
   const tots=labels.map((_,i)=>datasets.reduce((s,d)=>s+d.data[i],0)),mx=Math.max(...tots)*1.1;
   // Left axis
-  ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='right';
+  ctx.strokeStyle='#d8d8dc';ctx.lineWidth=0.5;ctx.font='13px DM Mono';ctx.fillStyle='#8a8a9a';ctx.textAlign='right';
   for(let i=0;i<=5;i++){const v=mx-(mx*i/5),y=M.top+(i/5)*ch;ctx.beginPath();ctx.moveTo(M.left,y);ctx.lineTo(w-M.right,y);ctx.stroke();ctx.fillText(barFmtY?barFmtY(v):'$'+(v/1000).toFixed(0)+'K',M.left-8,y+3)}
   // Bars
   const bw=Math.min(cw/labels.length*0.55,50);
   labels.forEach((l,i)=>{const x=M.left+(i+0.5)*(cw/labels.length)-bw/2;let yB=M.top+ch;
     datasets.forEach(ds=>{const bH=(ds.data[i]/mx)*ch,y=yB-bH;ctx.fillStyle=ds.color;ctx.globalAlpha=0.85;ctx.fillRect(x,y,bw,bH);ctx.globalAlpha=1;yB=y});
-    ctx.fillStyle='#6b7594';ctx.textAlign='center';ctx.font='11px DM Mono';ctx.fillText(l,x+bw/2,h-M.bottom+20)});
+    ctx.fillStyle='#8a8a9a';ctx.textAlign='center';ctx.font='13px DM Mono';ctx.fillText(l,x+bw/2,h-M.bottom+20)});
   // Right axis for line
   if(lineData){
     const lmx=Math.max(...lineData)*1.15;
-    ctx.textAlign='left';ctx.fillStyle='#d4dae8';
+    ctx.textAlign='left';ctx.fillStyle='#3a3a4a';
     for(let i=0;i<=4;i++){const v=lmx-(lmx*i/4),y=M.top+(i/4)*ch;ctx.fillText(lineFmtY?lineFmtY(v):v.toFixed(0),w-M.right+8,y+3)}
     // Line
-    ctx.strokeStyle='#d4dae8';ctx.lineWidth=2.5;ctx.setLineDash([6,4]);ctx.beginPath();
+    ctx.strokeStyle='#3a3a4a';ctx.lineWidth=2.5;ctx.setLineDash([6,4]);ctx.beginPath();
     lineData.forEach((v,i)=>{const x=M.left+(i+0.5)*(cw/labels.length),y=M.top+((lmx-v)/lmx)*ch;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.stroke();ctx.setLineDash([]);
     lineData.forEach((v,i)=>{const x=M.left+(i+0.5)*(cw/labels.length),y=M.top+((lmx-v)/lmx)*ch;
-      ctx.fillStyle='#d4dae8';ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0c0f14';ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle='#d4dae8';ctx.textAlign='center';ctx.font='10px DM Mono';ctx.fillText(Math.round(v).toLocaleString(),x,y-10)});
+      ctx.fillStyle='#3a3a4a';ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffffff';ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#3a3a4a';ctx.textAlign='center';ctx.font='13px DM Mono';ctx.fillText(Math.round(v).toLocaleString(),x,y-10)});
   }
   // Legend
-  let lx=M.left;datasets.forEach(ds=>{ctx.fillStyle=ds.color;ctx.fillRect(lx,8,10,10);ctx.fillStyle='#6b7594';ctx.textAlign='left';ctx.font='10px DM Mono';ctx.fillText(ds.label,lx+14,17);lx+=ctx.measureText(ds.label).width+24});
-  if(lineLabel){ctx.strokeStyle='#d4dae8';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(lx,13);ctx.lineTo(lx+16,13);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#d4dae8';ctx.fillText(lineLabel,lx+20,17)}
+  let lx=M.left;datasets.forEach(ds=>{ctx.fillStyle=ds.color;ctx.fillRect(lx,8,10,10);ctx.fillStyle='#8a8a9a';ctx.textAlign='left';ctx.font='13px DM Mono';ctx.fillText(ds.label,lx+14,17);lx+=ctx.measureText(ds.label).width+24});
+  if(lineLabel){ctx.strokeStyle='#3a3a4a';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(lx,13);ctx.lineTo(lx+16,13);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#3a3a4a';ctx.fillText(lineLabel,lx+20,17)}
 }
 
 function drawStackedBar(cid,labels,datasets){drawStackedBarWithLine(cid,labels,datasets)}
@@ -465,16 +465,16 @@ function drawGroupedBar(cid,labels,datasets,opts={}){
   ctx.clearRect(0,0,w,h);let all=[];datasets.forEach(d=>all.push(...d.data));
   let mx=Math.max(...all,0)*1.15,mn=Math.min(...all,0)*1.15;if(mn>=0)mn=0;if(mx<=0)mx=Math.max(...all.map(Math.abs))*0.1;
   const rng=mx-mn||1,zY=M.top+(mx/rng)*ch;
-  ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='right';
+  ctx.strokeStyle='#d8d8dc';ctx.lineWidth=0.5;ctx.font='13px DM Mono';ctx.fillStyle='#8a8a9a';ctx.textAlign='right';
   for(let i=0;i<=5;i++){const v=mx-(rng*i/5),y=M.top+(i/5)*ch;ctx.beginPath();ctx.moveTo(M.left,y);ctx.lineTo(w-M.right,y);ctx.stroke();ctx.fillText(opts.fmtY?opts.fmtY(v):'$'+v.toFixed(0),M.left-8,y+3)}
-  if(mn<0){ctx.strokeStyle='#6b7594';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(M.left,zY);ctx.lineTo(w-M.right,zY);ctx.stroke()}
+  if(mn<0){ctx.strokeStyle='#8a8a9a';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(M.left,zY);ctx.lineTo(w-M.right,zY);ctx.stroke()}
   const gw=cw/labels.length,bw=Math.min(gw*0.7/datasets.length,30);
   labels.forEach((l,i)=>{const gx=M.left+i*gw+gw/2;
     datasets.forEach((ds,j)=>{const v=ds.data[i],bH=Math.abs(v/rng*ch),x=gx-(datasets.length*bw)/2+j*bw+1,y=v>=0?zY-bH:zY;
       ctx.fillStyle=typeof ds.color==='function'?ds.color(v):ds.color;ctx.globalAlpha=0.85;ctx.fillRect(x,y,bw-2,bH);ctx.globalAlpha=1;
-      ctx.fillStyle='#d4dae8';ctx.textAlign='center';ctx.font='9px DM Mono';ctx.fillText('$'+v.toFixed(0),x+(bw-2)/2,v>=0?y-4:y+bH+12)});
-    ctx.fillStyle='#6b7594';ctx.textAlign='center';ctx.font='11px DM Mono';ctx.fillText(l,gx,h-M.bottom+20)});
-  let lx=M.left;datasets.forEach(ds=>{ctx.fillStyle=typeof ds.color==='function'?ds.color(1):ds.color;ctx.fillRect(lx,8,10,10);ctx.fillStyle='#6b7594';ctx.textAlign='left';ctx.font='10px DM Mono';ctx.fillText(ds.label,lx+14,17);lx+=ctx.measureText(ds.label).width+28})
+      ctx.fillStyle='#3a3a4a';ctx.textAlign='center';ctx.font='11px DM Mono';ctx.fillText('$'+v.toFixed(0),x+(bw-2)/2,v>=0?y-4:y+bH+12)});
+    ctx.fillStyle='#8a8a9a';ctx.textAlign='center';ctx.font='13px DM Mono';ctx.fillText(l,gx,h-M.bottom+20)});
+  let lx=M.left;datasets.forEach(ds=>{ctx.fillStyle=typeof ds.color==='function'?ds.color(1):ds.color;ctx.fillRect(lx,8,10,10);ctx.fillStyle='#8a8a9a';ctx.textAlign='left';ctx.font='13px DM Mono';ctx.fillText(ds.label,lx+14,17);lx+=ctx.measureText(ds.label).width+28})
 }
 
 // === PRICING ===
@@ -485,10 +485,10 @@ function updatePricing(){
   document.getElementById('pricing-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Year 3 Revenue</div><div class="kpi-value">$'+(y3.totalR/1000).toFixed(0)+'K</div></div><div class="kpi"><div class="kpi-label">Year 3 Net Income</div><div class="kpi-value '+(y3.ni>=0?'positive':'negative')+'">$'+(y3.ni/1000).toFixed(0)+'K</div></div><div class="kpi"><div class="kpi-label">Year 5 Net Income</div><div class="kpi-value '+(y5.ni>=0?'positive':'negative')+'">$'+(y5.ni/1000).toFixed(0)+'K</div></div><div class="kpi"><div class="kpi-label">Breakeven Year</div><div class="kpi-value">'+(be>=0?'Year '+(be+1):'Never')+'</div></div><div class="kpi"><div class="kpi-label">Year 1 CAC</div><div class="kpi-value">$'+Y[0].cac.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">5-Yr Cumulative P&L</div><div class="kpi-value '+(Y.reduce((s,y)=>s+y.ni,0)>=0?'positive':'negative')+'">$'+(Y.reduce((s,y)=>s+y.ni,0)/1000).toFixed(0)+'K</div></div>';
   const L=['Year 1','Year 2','Year 3','Year 4','Year 5'];
   drawStackedBarWithLine('chart-revenue',L,
-    [{label:'Hourly',data:Y.map(y=>y.hourlyR),color:'#5b8def'},{label:'Mileage',data:Y.map(y=>y.mileR),color:'#a78bfa'},{label:'Fees',data:Y.map(y=>y.feeR+y.appR),color:'#e8a44a'},{label:'Interest',data:Y.map(y=>y.intR),color:'#6b7594'}],
+    [{label:'Hourly',data:Y.map(y=>y.hourlyR),color:'#4a7ad4'},{label:'Mileage',data:Y.map(y=>y.mileR),color:'#7c5ec8'},{label:'Fees',data:Y.map(y=>y.feeR+y.appR),color:'#c8842a'},{label:'Interest',data:Y.map(y=>y.intR),color:'#8a8a9a'}],
     Y.map(y=>y.end),'Members (end of yr)');
-  drawBarChart('chart-netincome',L,[{label:'Net Income',data:Y.map(y=>y.ni),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+(v/1000).toFixed(0)+'K'}});
-  drawLineChart('chart-revvscost',L,[{label:'Total Revenue',data:Y.map(y=>y.totalR),color:'#4ecb8d'},{label:'Direct (Car) Costs',data:Y.map(y=>y.carC),color:'#e85a6f'}]);
+  drawBarChart('chart-netincome',L,[{label:'Net Income',data:Y.map(y=>y.ni),color:function(v){return v>=0?'#2a9d5c':'#d44a5a'}}],{showV:true,fmtY:function(v){return '$'+(v/1000).toFixed(0)+'K'}});
+  drawLineChart('chart-revvscost',L,[{label:'Total Revenue',data:Y.map(y=>y.totalR),color:'#2a9d5c'},{label:'Direct (Car) Costs',data:Y.map(y=>y.carC),color:'#d44a5a'}]);
 }
 function resetPricing(){['s-annual-fee','s-hourly-rate','s-mile-rate','s-app-fee','s-trips','s-attrition'].forEach(function(id,i){document.getElementById(id).value=[75,5.5,0.40,25,4,0.15][i]});updatePricing()}
 
@@ -537,25 +537,25 @@ function updateBuildup(){
   var L=['Year 1','Year 2','Year 3','Year 4','Year 5'];
   var numFmt=function(v){return Math.round(v).toLocaleString()};
   drawStackedBarWithLine('chart-member-growth',L,
-    [{label:'New Members',data:nm,color:'#5b8def'},
-     {label:'Lost (attrition)',data:endMembers.map(function(e,i){return i===0?0:endMembers[i-1]*att}),color:'#e85a6f'}],
+    [{label:'New Members',data:nm,color:'#4a7ad4'},
+     {label:'Lost (attrition)',data:endMembers.map(function(e,i){return i===0?0:endMembers[i-1]*att}),color:'#d44a5a'}],
     endMembers,'End of Year',null,numFmt);
   drawStackedBarWithLine('chart-cars',L,
-    [{label:'Cars',data:cars,color:'#4ecb8d'}],
+    [{label:'Cars',data:cars,color:'#2a9d5c'}],
     mpc,'Members/Car',null,numFmt);
   drawStackedBarWithLine('chart-mkt-cac',L,
-    [{label:'Marketing',data:mkt,color:'#a78bfa'}],
+    [{label:'Marketing',data:mkt,color:'#7c5ec8'}],
     cac,'CAC ($)');
-  drawBarChart('chart-car-costs',L,[{label:'Car Costs',data:carCosts,color:'#e8a44a'}],{showV:true,fmtY:function(v){return '$'+(v/1000).toFixed(0)+'K'}});
+  drawBarChart('chart-car-costs',L,[{label:'Car Costs',data:carCosts,color:'#c8842a'}],{showV:true,fmtY:function(v){return '$'+(v/1000).toFixed(0)+'K'}});
 
   // P&L impact charts — run model with current pricing slider values
   var af=+document.getElementById('s-annual-fee').value,hr=+document.getElementById('s-hourly-rate').value,mr=+document.getElementById('s-mile-rate').value,apf=+document.getElementById('s-app-fee').value,tpm=+document.getElementById('s-trips').value,patt=+document.getElementById('s-attrition').value;
   var Y=runModel({annualFee:af,hourlyRate:hr,mileRate:mr,appFee:apf,tripsPerMonth:tpm,attrition:patt});
   drawStackedBarWithLine('chart-bu-revenue',L,
-    [{label:'Hourly',data:Y.map(function(y){return y.hourlyR}),color:'#5b8def'},{label:'Mileage',data:Y.map(function(y){return y.mileR}),color:'#a78bfa'},{label:'Fees',data:Y.map(function(y){return y.feeR+y.appR}),color:'#e8a44a'},{label:'Interest',data:Y.map(function(y){return y.intR}),color:'#6b7594'}],
+    [{label:'Hourly',data:Y.map(function(y){return y.hourlyR}),color:'#4a7ad4'},{label:'Mileage',data:Y.map(function(y){return y.mileR}),color:'#7c5ec8'},{label:'Fees',data:Y.map(function(y){return y.feeR+y.appR}),color:'#c8842a'},{label:'Interest',data:Y.map(function(y){return y.intR}),color:'#8a8a9a'}],
     Y.map(function(y){return y.end}),'Members (end of yr)');
-  drawBarChart('chart-bu-netincome',L,[{label:'Net Income',data:Y.map(function(y){return y.ni}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+(v/1000).toFixed(0)+'K'}});
-  drawLineChart('chart-bu-revvscost',L,[{label:'Total Revenue',data:Y.map(function(y){return y.totalR}),color:'#4ecb8d'},{label:'Direct (Car) Costs',data:Y.map(function(y){return y.carC}),color:'#e85a6f'}]);
+  drawBarChart('chart-bu-netincome',L,[{label:'Net Income',data:Y.map(function(y){return y.ni}),color:function(v){return v>=0?'#2a9d5c':'#d44a5a'}}],{showV:true,fmtY:function(v){return '$'+(v/1000).toFixed(0)+'K'}});
+  drawLineChart('chart-bu-revvscost',L,[{label:'Total Revenue',data:Y.map(function(y){return y.totalR}),color:'#2a9d5c'},{label:'Direct (Car) Costs',data:Y.map(function(y){return y.carC}),color:'#d44a5a'}]);
 
   // Table
   var html='<table class="data-table"><thead><tr><th>Year</th><th class="num">New Mbrs</th><th class="num">End Mbrs</th><th class="num">Cars</th><th class="num">Mbrs/Car</th><th class="num">Marketing</th><th class="num">CAC</th><th class="num">Car Costs</th></tr></thead><tbody>';
@@ -582,19 +582,19 @@ function initCosts(){
   const Y=runModel({annualFee:75,hourlyRate:5.5,mileRate:0.4,appFee:25,tripsPerMonth:4,attrition:0.15});
   const L=['Year 1','Year 2','Year 3','Year 4','Year 5'];
   drawStackedBarWithLine('chart-cost-stack',L,
-    [{label:'Billing (per mbr)',data:Y.map(y=>y.billing),color:'#e8a44a'},
-     {label:'Processing (per new mbr)',data:Y.map(y=>y.bgcheck),color:'#5b8def'},
-     {label:'Marketing',data:Y.map(y=>y.mkt),color:'#a78bfa'},
-     {label:'Office fixed',data:Y.map(y=>y.offF),color:'#4ecb8d'}],
+    [{label:'Billing (per mbr)',data:Y.map(y=>y.billing),color:'#c8842a'},
+     {label:'Processing (per new mbr)',data:Y.map(y=>y.bgcheck),color:'#4a7ad4'},
+     {label:'Marketing',data:Y.map(y=>y.mkt),color:'#7c5ec8'},
+     {label:'Office fixed',data:Y.map(y=>y.offF),color:'#2a9d5c'}],
     Y.map(y=>y.end),'Members (end of yr)');
 
   // Cost per member
   const cpm=Y.map(y=>y.localOH/y.avg);
-  drawBarChart('chart-cost-per-member',L,[{label:'Local OH / Avg Member / Yr',data:cpm,color:'#e8a44a'}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
+  drawBarChart('chart-cost-per-member',L,[{label:'Local OH / Avg Member / Yr',data:cpm,color:'#c8842a'}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
 
   // CAC
   const cac=Y.map(y=>y.cac);
-  drawBarChart('chart-cac',L,[{label:'CAC',data:cac,color:function(v){return v>60?'#e85a6f':'#5b8def'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
+  drawBarChart('chart-cac',L,[{label:'CAC',data:cac,color:function(v){return v>60?'#d44a5a':'#4a7ad4'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
 
   // Detail table
   var html='<table class="data-table"><thead><tr><th>Category</th>';
@@ -631,16 +631,16 @@ function initPlanVsActual(){
 function drawVarianceWaterfall(){
   var V=[{l:'Planned\nMargin',v:83.01,t:'total'},{l:'Trip\nFrequency',v:-42.02,t:'d'},{l:'Rev/Use\nGain',v:25.51,t:'d'},{l:'Cost/Use\nIncrease',v:-19.40,t:'d'},{l:'Car Cost\nAllocation',v:-27.88,t:'d'},{l:'Actual\nMargin',v:19.22,t:'total'}];
   var R=getCtx('chart-variance'),ctx=R.ctx,w=R.w,h=R.h,M={top:20,right:20,bottom:55,left:65},cw=w-M.left-M.right,ch=h-M.top-M.bottom,mx=100,mn=-10,rng=mx-mn,zY=M.top+(mx/rng)*ch;
-  ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='right';
+  ctx.strokeStyle='#d8d8dc';ctx.lineWidth=0.5;ctx.font='13px DM Mono';ctx.fillStyle='#8a8a9a';ctx.textAlign='right';
   for(var i=0;i<=5;i++){var v=mx-(rng*i/5),y=M.top+(i/5)*ch;ctx.beginPath();ctx.moveTo(M.left,y);ctx.lineTo(w-M.right,y);ctx.stroke();ctx.fillText('$'+v.toFixed(0),M.left-8,y+3)}
   var bw=Math.min(cw/V.length*0.6,60),run=0;
   V.forEach(function(vi,idx){var x=M.left+(idx+0.5)*(cw/V.length)-bw/2;
-    if(vi.t==='total'){var bH=Math.abs(vi.v/rng*ch),ty=zY-bH;ctx.fillStyle=idx===0?'#5b8def':(vi.v>=0?'#4ecb8d':'#e85a6f');ctx.globalAlpha=0.85;ctx.fillRect(x,ty,bw,bH);ctx.globalAlpha=1;run=vi.v}
-    else{var sY=zY-(run/rng*ch);run+=vi.v;var eY=zY-(run/rng*ch),ty=Math.min(sY,eY),bH=Math.abs(eY-sY);ctx.fillStyle=vi.v>=0?'#4ecb8d':'#e85a6f';ctx.globalAlpha=0.85;ctx.fillRect(x,ty,bw,bH);ctx.globalAlpha=1;
-      if(idx<V.length-1){ctx.strokeStyle='#6b7594';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x+bw,eY);ctx.lineTo(M.left+(idx+1.5)*(cw/V.length)-bw/2,eY);ctx.stroke();ctx.setLineDash([])}}
-    ctx.fillStyle='#d4dae8';ctx.textAlign='center';ctx.font='10px DM Mono';var ly=vi.t==='total'?zY-(vi.v/rng*ch)-8:zY-(run/rng*ch)-8;
+    if(vi.t==='total'){var bH=Math.abs(vi.v/rng*ch),ty=zY-bH;ctx.fillStyle=idx===0?'#4a7ad4':(vi.v>=0?'#2a9d5c':'#d44a5a');ctx.globalAlpha=0.85;ctx.fillRect(x,ty,bw,bH);ctx.globalAlpha=1;run=vi.v}
+    else{var sY=zY-(run/rng*ch);run+=vi.v;var eY=zY-(run/rng*ch),ty=Math.min(sY,eY),bH=Math.abs(eY-sY);ctx.fillStyle=vi.v>=0?'#2a9d5c':'#d44a5a';ctx.globalAlpha=0.85;ctx.fillRect(x,ty,bw,bH);ctx.globalAlpha=1;
+      if(idx<V.length-1){ctx.strokeStyle='#8a8a9a';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x+bw,eY);ctx.lineTo(M.left+(idx+1.5)*(cw/V.length)-bw/2,eY);ctx.stroke();ctx.setLineDash([])}}
+    ctx.fillStyle='#3a3a4a';ctx.textAlign='center';ctx.font='13px DM Mono';var ly=vi.t==='total'?zY-(vi.v/rng*ch)-8:zY-(run/rng*ch)-8;
     ctx.fillText('$'+(vi.v>=0?'+':'')+vi.v.toFixed(1),x+bw/2,vi.v>=0||vi.t==='total'?ly:ly+28);
-    ctx.fillStyle='#6b7594';ctx.font='10px DM Mono';vi.l.split('\n').forEach(function(ln,li){ctx.fillText(ln,x+bw/2,h-M.bottom+16+li*14)})})
+    ctx.fillStyle='#8a8a9a';ctx.font='13px DM Mono';vi.l.split('\n').forEach(function(ln,li){ctx.fillText(ln,x+bw/2,h-M.bottom+16+li*14)})})
 }
 
 function updateDailyExplorer(){
@@ -651,11 +651,11 @@ function updateDailyExplorer(){
   var hMM=hMarginUse*hUPM,dMM=dMarginUse*dUPM,blended=hMM+dMM;
   document.getElementById('daily-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Daily Rev / Use</div><div class="kpi-value">$'+dRevUse.toFixed(2)+'</div><div class="kpi-sub">cap $'+cap+' + '+exM.toFixed(0)+'mi x $'+er.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Daily Margin / Use</div><div class="kpi-value '+(dMarginUse>=0?'positive':'negative')+'">$'+dMarginUse.toFixed(2)+'</div><div class="kpi-sub">was -$11.08</div></div><div class="kpi"><div class="kpi-label">Blended Margin / Mbr / Mo</div><div class="kpi-value '+(blended>=0?'positive':'negative')+'">$'+blended.toFixed(2)+'</div><div class="kpi-sub">was $19.22 | plan $83.01</div></div><div class="kpi"><div class="kpi-label">Daily Margin / Mbr / Mo</div><div class="kpi-value '+(dMM>=0?'positive':'negative')+'">$'+dMM.toFixed(2)+'</div><div class="kpi-sub">was -$7.64</div></div><div class="kpi"><div class="kpi-label">Excess Miles / Trip</div><div class="kpi-value">'+exM.toFixed(0)+'</div><div class="kpi-sub">'+avgMi+' driven - '+fm+' free</div></div>';
   drawGroupedBar('chart-daily-margin',['Revenue','Car Cost','Margin'],
-    [{label:'Hourly Use',data:[hRevUse,hCostUse,hMarginUse],color:'#5b8def'},
-     {label:'Daily Use',data:[dRevUse,dCostUse,dMarginUse],color:function(v){return v<0?'#e85a6f':'#e8a44a'}}],{fmtY:function(v){return '$'+v.toFixed(0)}});
+    [{label:'Hourly Use',data:[hRevUse,hCostUse,hMarginUse],color:'#4a7ad4'},
+     {label:'Daily Use',data:[dRevUse,dCostUse,dMarginUse],color:function(v){return v<0?'#d44a5a':'#c8842a'}}],{fmtY:function(v){return '$'+v.toFixed(0)}});
   var caps=[44,50,55,60,65,70,80,90,100];
   var bd=caps.map(function(c){var em=Math.max(0,avgMi-fm),dr=c+em*er,dm=dr-dCostUse;return hMarginUse*hUPM+dm*dUPM});
-  drawBarChart('chart-daily-blended',caps.map(function(c){return '$'+c}),[{label:'Blended $/Mbr/Mo',data:bd,color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
+  drawBarChart('chart-daily-blended',caps.map(function(c){return '$'+c}),[{label:'Blended $/Mbr/Mo',data:bd,color:function(v){return v>=0?'#2a9d5c':'#d44a5a'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
 }
 
 // === UNIT ECONOMICS ===
@@ -674,23 +674,23 @@ function updateUnit(){
     document.getElementById('unit-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Revenue / Use</div><div class="kpi-value">$'+ru.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Cost / Use</div><div class="kpi-value">$'+cpu.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Margin / Use</div><div class="kpi-value '+(mpu>=0?'positive':'negative')+'">$'+mpu.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Gross Margin %</div><div class="kpi-value '+(gm>=0?'positive':'negative')+'">'+gm.toFixed(1)+'%</div></div><div class="kpi"><div class="kpi-label">Cost / Hour</div><div class="kpi-value">$'+cph.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Utilization Rate</div><div class="kpi-value'+(util>1?' negative':'')+'">'+(util*100).toFixed(0)+'%</div></div>';
     document.getElementById('unit-view-content').innerHTML='<div class="two-col"><div class="chart-container"><div class="chart-title">Cost per Hour vs Revenue per Hour at Varying Utilization</div><canvas id="chart-u1" height="260"></canvas></div><div class="chart-container"><div class="chart-title">Margin per Use at Varying Hours per Use</div><canvas id="chart-u2" height="260"></canvas></div></div>';
     var uR=[0.15,0.20,0.25,0.30,0.35,0.40,0.50,0.60],rph=ru/hpu;
-    drawLineChart('chart-u1',uR.map(function(u){return (u*100).toFixed(0)+'%'}),[{label:'Cost/Hour',data:uR.map(function(u){return cc/(24*30*u)}),color:'#e85a6f'},{label:'Revenue/Hour',data:uR.map(function(){return rph}),color:'#4ecb8d'}],{fmtY:function(v){return '$'+v.toFixed(1)}});
+    drawLineChart('chart-u1',uR.map(function(u){return (u*100).toFixed(0)+'%'}),[{label:'Cost/Hour',data:uR.map(function(u){return cc/(24*30*u)}),color:'#d44a5a'},{label:'Revenue/Hour',data:uR.map(function(){return rph}),color:'#2a9d5c'}],{fmtY:function(v){return '$'+v.toFixed(1)}});
     var hR=[2,3,4,5,6,8,10,12,16];
-    drawBarChart('chart-u2',hR.map(function(h){return h+'h'}),[{label:'Margin/Use',data:hR.map(function(h){return ru-cph*h}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
+    drawBarChart('chart-u2',hR.map(function(h){return h+'h'}),[{label:'Margin/Use',data:hR.map(function(h){return ru-cph*h}),color:function(v){return v>=0?'#2a9d5c':'#d44a5a'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
     document.getElementById('unit-annotation').textContent='Per-use view: each use consumes car-hours. Cost per use = (monthly car cost / usable hours) x hours per use. Short uses have low cost and healthy margin. Long daily uses (16h) can exceed revenue.';
   } else if(unitView==='member'){
     document.getElementById('unit-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Revenue / Mbr / Mo</div><div class="kpi-value">$'+rMM.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Car Cost / Mbr / Mo</div><div class="kpi-value">$'+cMM.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Margin / Mbr / Mo</div><div class="kpi-value '+(mMM>=0?'positive':'negative')+'">$'+mMM.toFixed(2)+'</div></div><div class="kpi"><div class="kpi-label">Gross Margin %</div><div class="kpi-value '+(gm>=0?'positive':'negative')+'">'+gm.toFixed(1)+'%</div></div><div class="kpi"><div class="kpi-label">Uses / Mbr / Mo</div><div class="kpi-value">'+upm.toFixed(1)+'</div></div><div class="kpi"><div class="kpi-label">Utilization Rate</div><div class="kpi-value'+(util>1?' negative':'')+'">'+(util*100).toFixed(0)+'%</div></div>';
     document.getElementById('unit-view-content').innerHTML='<div class="two-col"><div class="chart-container"><div class="chart-title">Monthly Margin per Member at Varying Members per Car (utilization %)</div><canvas id="chart-u1" height="260"></canvas></div><div class="chart-container"><div class="chart-title">Revenue vs Car Cost per Member at Varying Uses/Mo (utilization %)</div><canvas id="chart-u2" height="260"></canvas></div></div>';
     var mR=[6,8,10,12,14,16,18,20,24,28];
-    drawBarChart('chart-u1',mR.map(function(n){var u=Math.min(n*upm*hpu/(24*30),1);return n+' ('+(u*100).toFixed(0)+'%)'}),[{label:'Margin/Mbr/Mo',data:mR.map(function(n){return rMM-cc/n}),color:function(v){return v>=0?'#4ecb8d':'#e85a6f'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
+    drawBarChart('chart-u1',mR.map(function(n){var u=Math.min(n*upm*hpu/(24*30),1);return n+' ('+(u*100).toFixed(0)+'%)'}),[{label:'Margin/Mbr/Mo',data:mR.map(function(n){return rMM-cc/n}),color:function(v){return v>=0?'#2a9d5c':'#d44a5a'}}],{showV:true,fmtY:function(v){return '$'+v.toFixed(0)}});
     var uR2=[1,2,3,4,5,6,7,8];
-    drawLineChart('chart-u2',uR2.map(function(u){var ut=Math.min(mpc*u*hpu/(24*30),1);return u+' ('+(ut*100).toFixed(0)+'%)'}),[{label:'Revenue/Mbr',data:uR2.map(function(u){return ru*u}),color:'#4ecb8d'},{label:'Car Cost/Mbr',data:uR2.map(function(){return cMM}),color:'#e85a6f'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
+    drawLineChart('chart-u2',uR2.map(function(u){var ut=Math.min(mpc*u*hpu/(24*30),1);return u+' ('+(ut*100).toFixed(0)+'%)'}),[{label:'Revenue/Mbr',data:uR2.map(function(u){return ru*u}),color:'#2a9d5c'},{label:'Car Cost/Mbr',data:uR2.map(function(){return cMM}),color:'#d44a5a'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
     document.getElementById('unit-annotation').textContent='Per-member view: car cost is shared across members. Revenue scales with usage frequency, but car cost per member is fixed by members-per-car ratio. More members lowers allocation but requires utilization headroom.';
   } else {
     document.getElementById('unit-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Revenue / Car / Mo</div><div class="kpi-value">$'+rCar.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Car Cost / Mo</div><div class="kpi-value">$'+cc+'</div></div><div class="kpi"><div class="kpi-label">Margin / Car / Mo</div><div class="kpi-value '+(mCar>=0?'positive':'negative')+'">$'+mCar.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Gross Margin %</div><div class="kpi-value '+(gm>=0?'positive':'negative')+'">'+gm.toFixed(1)+'%</div></div><div class="kpi"><div class="kpi-label">Utilization Rate</div><div class="kpi-value'+(util>1?' negative':'')+'">'+(util*100).toFixed(0)+'%</div></div>';
     document.getElementById('unit-view-content').innerHTML='<div class="two-col"><div class="chart-container"><div class="chart-title">Revenue & Cost per Car at Varying Members per Car (utilization %)</div><canvas id="chart-u1" height="200"></canvas></div><div class="card"><div class="card-label">Overhead Coverage - How Many Cars to Break Even? (Year 3)</div><table class="data-table"><thead><tr><th>Cost Layer</th><th style="text-align:right">Annual Cost</th><th style="text-align:right">Cars Needed</th></tr></thead><tbody><tr class="total-row"><td>Local office overhead</td><td class="num">$'+Math.round(localOH).toLocaleString()+'</td><td class="num">'+(mCar>0?(localOH/(mCar*12)).toFixed(1):'inf')+'</td></tr></tbody></table></div></div>';
     var mR2=[6,8,10,12,14,16,18,20,24,28];
-    drawLineChart('chart-u1',mR2.map(function(n){var u=Math.min(n*upm*hpu/(24*30),1);return n+' ('+(u*100).toFixed(0)+'%)'}),[{label:'Revenue/Car',data:mR2.map(function(n){return ru*upm*n}),color:'#4ecb8d'},{label:'Car Cost',data:mR2.map(function(){return cc}),color:'#e85a6f'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
+    drawLineChart('chart-u1',mR2.map(function(n){var u=Math.min(n*upm*hpu/(24*30),1);return n+' ('+(u*100).toFixed(0)+'%)'}),[{label:'Revenue/Car',data:mR2.map(function(n){return ru*upm*n}),color:'#2a9d5c'},{label:'Car Cost',data:mR2.map(function(){return cc}),color:'#d44a5a'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
     document.getElementById('unit-annotation').textContent='Per-car view: the fundamental asset unit. Margin per car must cover local office overhead. The table shows how many margin-positive cars are needed for overall breakeven.';
   }
 }
@@ -732,17 +732,17 @@ function initSensitivity(){
   ds.sort(function(a,b){return(b.hi-b.lo)-(a.hi-a.lo)});
   var R=getCtx('chart-tornado'),ctx=R.ctx,w=R.w,h=R.h,M={top:20,right:30,bottom:30,left:120},cw=w-M.left-M.right,ch=h-M.top-M.bottom;
   var ma=Math.max.apply(null,ds.map(function(d){return Math.max(Math.abs(d.lo),Math.abs(d.hi))}))*1.15,cx=M.left+cw/2,bH=Math.min(ch/ds.length*0.7,30),gap=ch/ds.length;
-  ctx.strokeStyle='#6b7594';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx,M.top);ctx.lineTo(cx,h-M.bottom);ctx.stroke();
-  ctx.strokeStyle='#252b3a';ctx.lineWidth=0.5;ctx.font='10px DM Mono';ctx.fillStyle='#6b7594';ctx.textAlign='center';
+  ctx.strokeStyle='#8a8a9a';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx,M.top);ctx.lineTo(cx,h-M.bottom);ctx.stroke();
+  ctx.strokeStyle='#d8d8dc';ctx.lineWidth=0.5;ctx.font='13px DM Mono';ctx.fillStyle='#8a8a9a';ctx.textAlign='center';
   [-ma,-ma/2,0,ma/2,ma].forEach(function(v){var x=cx+(v/ma)*(cw/2);ctx.beginPath();ctx.moveTo(x,M.top);ctx.lineTo(x,h-M.bottom);ctx.stroke();ctx.fillText('$'+(v/1000).toFixed(0)+'K',x,h-M.bottom+16)});
-  ds.forEach(function(d,i){var y=M.top+i*gap+gap/2-bH/2;ctx.fillStyle='#e85a6f';ctx.globalAlpha=0.8;ctx.fillRect(cx,y,(d.lo/ma)*(cw/2),bH);ctx.fillStyle='#4ecb8d';ctx.fillRect(cx,y,(d.hi/ma)*(cw/2),bH);ctx.globalAlpha=1;ctx.fillStyle='#d4dae8';ctx.textAlign='right';ctx.font='12px DM Mono';ctx.fillText(d.n,M.left-8,y+bH/2+4)});
+  ds.forEach(function(d,i){var y=M.top+i*gap+gap/2-bH/2;ctx.fillStyle='#d44a5a';ctx.globalAlpha=0.8;ctx.fillRect(cx,y,(d.lo/ma)*(cw/2),bH);ctx.fillStyle='#2a9d5c';ctx.fillRect(cx,y,(d.hi/ma)*(cw/2),bH);ctx.globalAlpha=1;ctx.fillStyle='#3a3a4a';ctx.textAlign='right';ctx.font='13px DM Mono';ctx.fillText(d.n,M.left-8,y+bH/2+4)});
   var hR=[3,4,5,5.5,6,7,8,10],mps=[10,12,14,16,18,20,22,25];
   var html='<div class="heatmap-grid" style="grid-template-columns:80px repeat('+hR.length+',1fr)"><div class="heatmap-header">MPC / Rate</div>';
   hR.forEach(function(r){html+='<div class="heatmap-header">$'+r+'</div>'});
   mps.forEach(function(mp){html+='<div class="heatmap-header" style="text-align:right">'+mp+'</div>';hR.forEach(function(rate){
     var tr=882*75+882*12*4*22*0.40+882*12*4*4*rate+180*25+882*300*0.04,ni=(tr-49*TOTAL_VAR_PER_CAR-233956)/1000;
     var int=Math.min(Math.abs(ni)/800,1),bg,fg;
-    if(ni>=0){bg='rgba(78,203,141,'+(0.1+int*0.5)+')';fg=int>0.6?'#0c0f14':'#d4dae8'}else{bg='rgba(232,90,111,'+(0.1+int*0.5)+')';fg=int>0.6?'#0c0f14':'#d4dae8'}
+    if(ni>=0){bg='rgba(42,157,92,'+(0.1+int*0.5)+')';fg=int>0.6?'#ffffff':'#3a3a4a'}else{bg='rgba(212,74,90,'+(0.1+int*0.5)+')';fg=int>0.6?'#ffffff':'#3a3a4a'}
     html+='<div class="heatmap-cell" style="background:'+bg+';color:'+fg+'">'+ni.toFixed(0)+'</div>'})});
   html+='</div>';document.getElementById('heatmap-container').innerHTML=html;
 }
@@ -754,9 +754,9 @@ function updateLTV(){
   var mA=1-Math.pow(1-aa,1/12),aL=1/mA,lc=mm*aL,net=lc-cac,rat=lc/cac,pb=cac/mm;
   document.getElementById('ltv-kpis').innerHTML='<div class="kpi"><div class="kpi-label">Avg Lifetime (months)</div><div class="kpi-value">'+aL.toFixed(1)+'</div></div><div class="kpi"><div class="kpi-label">Lifecycle Margin</div><div class="kpi-value '+(lc>=0?'positive':'negative')+'">$'+lc.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">Net LTV</div><div class="kpi-value '+(net>=0?'positive':'negative')+'">$'+net.toFixed(0)+'</div></div><div class="kpi"><div class="kpi-label">LTV : CAC</div><div class="kpi-value">'+rat.toFixed(1)+'x</div></div><div class="kpi"><div class="kpi-label">Payback Period</div><div class="kpi-value">'+(pb<1?'<1':pb.toFixed(1))+' mo</div></div>';
   var mos=Array.from({length:61},function(_,i){return i}),surv=mos.map(function(m){return Math.pow(1-mA,m)*100}),sM=[0,12,24,36,48,60];
-  drawLineChart('chart-survival',sM.map(function(m){return 'Mo '+m}),[{label:'Remaining %',data:sM.map(function(m){return surv[m]}),color:'#e8a44a'}],{fmtY:function(v){return v.toFixed(0)+'%'}});
+  drawLineChart('chart-survival',sM.map(function(m){return 'Mo '+m}),[{label:'Remaining %',data:sM.map(function(m){return surv[m]}),color:'#c8842a'}],{fmtY:function(v){return v.toFixed(0)+'%'}});
   var cum=mos.map(function(m){var t=-cac;for(var i=1;i<=m;i++)t+=mm*Math.pow(1-mA,i);return t}),sM2=[0,6,12,18,24,30,36,42,48,54,60];
-  drawLineChart('chart-cumulative',sM2.map(function(m){return ''+m}),[{label:'Cumulative $',data:sM2.map(function(m){return cum[m]}),color:'#5b8def'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
+  drawLineChart('chart-cumulative',sM2.map(function(m){return ''+m}),[{label:'Cumulative $',data:sM2.map(function(m){return cum[m]}),color:'#4a7ad4'}],{fmtY:function(v){return '$'+v.toFixed(0)}});
 }
 function resetLTV(){['s-ltv-margin','s-ltv-attrition','s-ltv-cac'].forEach(function(id,i){document.getElementById(id).value=[90,0.15,43][i]});updateLTV()}
 
